@@ -1,0 +1,102 @@
+#ifndef STACK_HPP
+#define STACK_HPP
+#include <vector>
+// #include <stack>
+
+namespace ft
+{
+	template<typename T, typename Container = std::vector<T> >
+	class stack
+	{
+		public:
+		typedef typename Container::value_type		value_type;
+		typedef typename Container::size_type 		size_type;
+		typedef Container 							container_type;
+
+		private:
+		Container 	_c;
+
+			
+		public:
+		explicit stack (const container_type& ctnr = container_type()): _c(ctnr){};
+	
+		virtual ~stack(){};
+
+		bool empty() const
+		{
+			return (_c.empty());
+		}
+		
+		size_t size() const
+		{
+			return (_c.size());
+		}
+		
+		T &top()
+		{
+			return (_c.back());
+		}
+		
+		const T &top() const
+		{
+			return (_c.back());
+		}
+		
+		void push(const T &val)
+		{
+			_c.push_back(val);
+		}
+
+		void pop()
+		{
+			_c.pop_back();
+		}
+
+		friend bool operator==( const ft::stack< T, Container > & lhs, const ft::stack< T,Container > & rhs )
+		{
+			return (lhs._c == rhs._c);
+		}
+		
+		
+		friend bool operator!=( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
+		{
+			return (lhs._c != rhs._c);
+		}
+			
+		friend bool operator<( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
+		{
+			return (lhs._c < rhs._c);
+		}
+			
+		friend bool operator<=( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
+		{
+			return (lhs._c <= rhs._c);
+		}
+			
+		friend bool operator>( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
+		{
+			return (lhs._c > rhs._c);
+		}
+			
+		friend bool operator>=( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
+		{
+			return (lhs._c >= rhs._c);
+		}
+	};
+
+
+
+}
+
+#endif
+
+
+
+// push(value): This method pushes the element in the stack.
+// pop(): This method deletes the top element of the stack.
+// top(): This method returns the value of the last element entered in the stack.
+// size(): This method returns the size of the stack.
+// empty(): This method checks whether the stack is empty or not.
+
+
+

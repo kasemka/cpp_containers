@@ -1,6 +1,8 @@
 #ifndef STACK_HPP
 #define STACK_HPP
 #include <vector>
+#include <iostream>
+#include <queue>
 // #include <stack>
 
 namespace ft
@@ -9,17 +11,22 @@ namespace ft
 	class stack
 	{
 		public:
-		typedef typename Container::value_type		value_type;
-		typedef typename Container::size_type 		size_type;
+		// typedef typename Container::value_type		value_type;
+		// typedef typename Container::size_type 		size_type;
 		typedef Container 							container_type;
 
 		private:
-		Container 	_c;
+		std::vector<T>	_c;
 
 			
 		public:
-		explicit stack (const container_type& ctnr = container_type()): _c(ctnr){};
+		
+		explicit stack (const container_type& ctnr = container_type()): _c(ctnr){}; //создание нового объекта референса  = вызов конструктора, если аргумент пустой
+		//_c(ctnr) - это конструктор копирования
+
 	
+
+
 		virtual ~stack(){};
 
 		bool empty() const
@@ -52,45 +59,59 @@ namespace ft
 			_c.pop_back();
 		}
 
-		friend bool operator==( const ft::stack< T, Container > & lhs, const ft::stack< T,Container > & rhs )
-		{
+		template<typename Tn, typename Cont>
+		friend bool operator==( const ft::stack< Tn, Cont > & lhs, const ft::stack< Tn,Cont > & rhs );
+		
+		template<typename Tn, typename Cont>
+		friend bool operator!=( const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs );
+			
+		template<typename Tn, typename Cont>
+		friend bool operator<(  const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs );
+			
+		template<typename Tn, typename Cont>
+		friend bool operator<=(  const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs);
+			
+		template<typename Tn, typename Cont>
+		friend bool operator>(  const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs );
+
+		template<typename Tn, typename Cont>
+		friend bool operator>=(  const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs);
+	};
+	
+
+	template<typename Tn, typename Cont>
+	bool operator==(  const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs ){
 			return (lhs._c == rhs._c);
 		}
+	template<typename Tn, typename Cont>
+	bool operator!=(  const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs ){
+		return (lhs._c != rhs._c);
+	}
 		
+	template<typename Tn, typename Cont>
+	 bool operator<(  const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs ){
+		return (lhs._c < rhs._c);
+	}
 		
-		friend bool operator!=( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{
-			return (lhs._c != rhs._c);
-		}
-			
-		friend bool operator<( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{
-			return (lhs._c < rhs._c);
-		}
-			
-		friend bool operator<=( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{
-			return (lhs._c <= rhs._c);
-		}
-			
-		friend bool operator>( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{
-			return (lhs._c > rhs._c);
-		}
-			
-		friend bool operator>=( const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs )
-		{
-			return (lhs._c >= rhs._c);
-		}
-	};
+	template<typename Tn, typename Cont>
+	bool operator<=(  const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs){
+		return (lhs._c <= rhs._c);
+	}
+		
+	template<typename Tn, typename Cont>
+	bool operator>(  const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs ){
+		return (lhs._c > rhs._c);
+	}
 
+	template<typename Tn, typename Cont>
+	bool operator>=(  const ft::stack<Tn,Cont>& lhs, const ft::stack<Tn,Cont>& rhs ){
+		return (lhs._c >= rhs._c);
+	}
 
 
 }
 
 #endif
-
-
 
 // push(value): This method pushes the element in the stack.
 // pop(): This method deletes the top element of the stack.

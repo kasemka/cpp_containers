@@ -123,37 +123,6 @@
 
 
 
-#include "stack.hpp"
-#include <iostream>
-//stack
-int main()
-{
-    ft::stack<int> s;
-    
-    s.push(30);
-    s.push(40);
-    s.push(50);
-    s.push(60);
-    std::cout << "The top of the stack contains " << s.top() << std::endl;
-    s.pop();
-    std::cout << "The top of the stack after performing pop operation: " << s.top() << std::endl;
-    std::cout << "Printing all elements of the stack" << std::endl;
-
-    ft::stack<int> i(s);
-    while (!s.empty()){
-        std::cout << s.top() << " ";
-        s.pop();
-    }
-    std::cout<<"i == s : " << (i==s) <<std::endl;
-    std::cout <<std::endl;
-
-	ft::stack<int> u(s);
-	u.pop();
-	u.pop();
-
-    std::cout<<"j == s : " << (u==s) <<std::endl;
-    return (0);
-}
 
 // int main()
 // {

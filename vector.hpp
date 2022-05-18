@@ -1,119 +1,153 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
+#include <string>
+#include <memory>
+#include <vector>
+#include <iostream>
 
-// #include <vector>
+// namespace ft
+// {
+// template<bool Cond, class l = void>
+// struct enable_if
+// {
+
+// };
+
+// template<class T>
+// struct enable_if<true, T>
+// {
+// 	typedef T type;
+// };
+
+// }
+
+// template<typename T>
+// class Allocator: 
+// {
+// 	allocator<T> myAlloc;
+// 	size_t _size;
+// 	public:
+// 	Allocator(const size_t &size = 10): _size(size){
+// 		return (myAlloc.allocate(10));
+// 	};
 
 
+// };
 
 
 namespace ft
 {
-
-	template<typename vector>
-	class vectorIter
-	{
-		private:
-		PointerType m_Ptr;
-
-		public:
-		using ValueType = typename Vector::ValueType;
-		using PointerType = ValueType *;
-		using ReferenceType = ValueType &;
-		public:
-		vectorIter(PointerType PTRDIFF_MAX){
-			: mPtr(ptr);
-		};
-		vectorIter &operator++()
-		{
-			mPtr++;
-			return *this;
-		}
-		vectorIter operator++(int)
-		{
-			vectorIter iterator = *this;
-			++(*this);
-			return iterator;
-		}
-		vectorIter &operator--()
-		{
-			mPtr--;
-			return *this;
-		}
-		vectorIter operator--(int)
-		{
-			vectorIter iterator = *this;
-			--(*this);
-			return iterator;
-		}
-		ReferenceType operator[](int index)
-		{
-			return *(mPtr[index]);
-		}
-		ReferenceType operator->()
-		{
-			return mPtr;
-		}
-		ReferenceType operator*()
-		{
-			return *mPtr;
-		}
-		bool operator==(const vectorIter &other) const
-		{
-			return mPtr == other.mPtr;
-		}
-		bool operator!=(const vectorIter &other) const
-		{
-			return !(*this == other);
-		}
-	};
-
-
-	template<typename T>
+	template<typename T, typename allocator_type = std::allocator<T> >
 	class vector
 	{
-		private:
-		T* mData = nullptr;
-		size_t mSize=0;
-		size_t mCapacity=0;
 		public:
-		using ValuseType = T;
-		using Iterator = vectorIter<vector<T>>;
+		typedef T									value_type;
+		// typedef Alloc								allocator_type;
+		typedef typename allocator_type::reference			reference;
+		typedef typename allocator_type::const_reference	const_reference;
+		typedef typename allocator_type::pointer			pointer;
+		typedef typename allocator_type::const_pointer		const_pointer;
+		typedef size_t										size_type;
+		// typedef value_type iterator
+
+
+
+		private:
+
+		allocator_type	_alloc;
+		size_type		_size;
+		size_type		_capacity;
+		// value_type		*_name;
+		pointer			_p;
+		
+		
 
 		public:
-		vector(){
-			//allocate 2 elems
-			// ReAlloc(2);
+		// (1) empty container constructor (default constructor)
+		explicit vector (const allocator_type& alloc = allocator_type()):
+		_alloc(alloc), _size(0), _p(0)
+		{
+			std::cout<<"empty vector constructor called"<<std::endl;
 		};
-		~vector(){
-			Clear();
-			::operator delete(mData, mCapacity *sizeof(T));
-		}
-		void PushBack(const T &value)
+
+		//(2) fill constructor
+		// Constructs a container with n elements. Each element is a copy of val.
+		explicit vector (size_type _n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()):
+		_alloc(alloc), _size(_n), _capacity(_n)
 		{
-			if (mSize >= mCapacity)
-				ReAlloc(mCapacity + mCapacity /2);
-			mData[mSize] = value;
-			mSize++;
-		}
-		void PushBack(T &&value)
+
+			_p = _alloc.allocate(_capacity);
+			for (int i = 0; i < _n; ++i)
+			{
+				_alloc.construct(_p + i, val);
+			}
+			std::cout<<"vector with n elements constructor called"<<std::endl;
+		};
+
+
+		// range constructor
+		// Constructs a container with as many elements as the range [first,last), 
+		// with each element constructed from its corresponding element in that range, in the same order.
+		// template <class InputIterator> vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());
+
+		// copy constructor
+		vector (const vector& x)
 		{
-			if (mSize >= mCapacity)
-				ReAlloc(mCapacity + mCapacity /2);
-			mData[mSize] = std::move(value);
-			mSize++;
-		}
-		size_t Size() const {
-			return mSize;
-		}
-		Iterator begin()
+			*this = x;
+			std::cout<<"vector copy constructor called"<<std::endl;
+			
+		};
+		
+
+		~vector()
 		{
-			return Iterator(mData);	
-		}
-		Iterator end()
+			
+			if (_p)
+			{
+				for (size_t i = 0; i<_size; i++)
+					_alloc.destroy(_p + i);
+				_alloc.deallocate(_p, _capacity);
+			}
+		};
+
+
+		size_type size() const
 		{
-			return Iterator(mData + mSize);	
+			return _size;
 		}
+		size_type max_size() const
+		{
+			return (allocator_type().max_size());
+		}
+		
+		// void resize (size_type n, value_type val = value_type())
+		// {
+		// 	if ()
+		// }
+		size_type capacity() const
+		{
+			return _capacity;
+		}
+
+		bool empty() const
+		{
+			
+			return (_size > 0 ? false : true);
+		}
+
+		void reserve (size_type n);
+	
+		
+
+		// allocator_type get_allocator() const
+		// {
+			
+		// }
+		
+
+
+
 	};
 }
 

@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <iostream>
+#include <unistd.h>
 
 // namespace ft
 // {
@@ -66,7 +67,7 @@ namespace ft
 		public:
 		// (1) empty container constructor (default constructor)
 		explicit vector (const allocator_type& alloc = allocator_type()):
-		_alloc(alloc), _size(0), _p(0)
+		_alloc(alloc), _size(0), _capacity(0), _p(0)
 		{
 			std::cout<<"empty vector constructor called"<<std::endl;
 		};
@@ -74,16 +75,19 @@ namespace ft
 		//(2) fill constructor
 		// Constructs a container with n elements. Each element is a copy of val.
 		explicit vector (size_type _n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()):
-		_alloc(alloc), _size(_n), _capacity(_n)
+		_alloc(alloc), _size(_n)
 		{
-
-			_p = _alloc.allocate(_capacity);
+			_capacity = _size;
+			_p = _alloc.allocate(_capacity);	
 			for (int i = 0; i < _n; ++i)
 			{
-				_alloc.construct(_p + i, val);
+					_alloc.construct(_p + i, val);			
 			}
+
 			std::cout<<"vector with n elements constructor called"<<std::endl;
 		};
+
+
 
 
 		// range constructor
@@ -99,10 +103,8 @@ namespace ft
 			
 		};
 		
-
 		~vector()
 		{
-			
 			if (_p)
 			{
 				for (size_t i = 0; i<_size; i++)
@@ -121,10 +123,27 @@ namespace ft
 			return (allocator_type().max_size());
 		}
 		
-		// void resize (size_type n, value_type val = value_type())
-		// {
-		// 	if ()
-		// }
+		void resize (size_type n, value_type val = value_type())
+		{
+			if (_capacity < n)
+				reserve(n);
+		
+			std::cout<<"pointer in resize "<<_p<<" cap "<< _capacity <<std::endl;
+			for (; _size < n;_size++)
+			{
+				
+				_alloc.construct(_p + _size, val);
+				
+			}
+			
+			for (; _size > n;)
+			{
+				std::cout<<"size "<<_size<<std::endl;
+				this->pop_back();
+			}
+			
+		
+		}
 		size_type capacity() const
 		{
 			return _capacity;
@@ -136,17 +155,67 @@ namespace ft
 			return (_size > 0 ? false : true);
 		}
 
-		void reserve (size_type n);
-	
+		void reserve (size_type n)
+		{
+			if (n > this->max_size())
+				return ;
+			if (n <= _capacity)
+			{
+				
+				return ;
+			}
+
+			pointer _oldp = _p;
+			size_type _oldcap = _capacity;
 		
+
+			_capacity = n;
+
+			_p = _alloc.allocate(_capacity);
+			for (size_type i = 0; i < _size; ++i)
+				_alloc.construct(_p + i, *(_oldp + i));
+	
+			for (size_type i = 0; i < _size; ++i)
+				_alloc.destroy(_oldp + i);
+			_alloc.deallocate(_oldp, _oldcap);
+			
+		}
+	
+
+		void push_back (const value_type& val)
+		{
+			if (_size == _capacity)
+			{
+				if (_size == 0)
+					_capacity = 1;
+				else 
+					_capacity = _capacity * 2;
+				reserve(_capacity);
+			}
+			_alloc.construct(_p + _size, val);
+			++_size;
+		}
+
+		void pop_back()
+		{
+			_size--;
+			_alloc.destroy(_p + _size);
+		}
 
 		// allocator_type get_allocator() const
 		// {
 			
 		// }
 		
+		const_reference operator[] (size_type n) const
+        {
+            return(_p[n]);
+        }
 
-
+		reference operator[] (size_type n) 
+        {
+            return(_p[n]);
+        }
 
 	};
 }

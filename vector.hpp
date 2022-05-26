@@ -6,6 +6,11 @@
 #include <vector>
 #include <iostream>
 #include <unistd.h>
+#include "iterator.hpp"
+
+
+
+// class Iterator
 
 namespace ft
 {
@@ -13,16 +18,20 @@ namespace ft
 	class vector
 	{
 		public:
-		typedef T									value_type;
-		typedef Alloc								allocator_type;
-		typedef typename allocator_type::reference			reference;
-		typedef typename allocator_type::const_reference	const_reference;
-		typedef typename allocator_type::pointer			pointer;
-		typedef typename allocator_type::const_pointer		const_pointer;
+		typedef T														value_type;
+		typedef Alloc													allocator_type;
+		typedef typename allocator_type::reference						reference;
+		typedef typename allocator_type::const_reference				const_reference;
+		typedef typename allocator_type::pointer						pointer;
+		typedef typename allocator_type::const_pointer					const_pointer;
+
+		typedef typename ft::random_access_iterator_tag<value_type> 	iterator;
+		// typedef typename const_iterator;
+		// typedef typename reverse_iterator;
+		// typedef typename const_reverse_iterator;
+		// typedef typename difference_type;
+
 		typedef size_t										size_type;
-		// typedef value_type iterator
-
-
 
 		private:
 
@@ -31,18 +40,19 @@ namespace ft
 		size_type		_capacity;
 		// value_type		*_name;
 		pointer			_p;
+		pointer			_end;
+
+		// iterator startIt;
+		// iterator endIt;
 		
 		
 
 		public:
-		// default constructor
+		
 		explicit vector (const allocator_type& alloc = allocator_type()):
-		_alloc(alloc), _size(0), _capacity(0), _p(0)
-		{
+		_alloc(alloc), _size(0), _capacity(0), _p(0){
 			// std::cout<<"empty vector constructor called"<<std::endl;
 		};
-		// fill constructor
-		// Constructs a container with n elements. Each element is a copy of val.
 		explicit vector (size_type _n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()):
 		_alloc(alloc), _size(_n)
 		{
@@ -52,24 +62,28 @@ namespace ft
 			{
 					_alloc.construct(_p + i, val);			
 			}
+			
+			// startIt = _p;
+			// endIt = _p[_size - 1];
 
 			// std::cout<<"vector with n elements constructor called"<<std::endl;
 		};
-		// range constructor
-		// Constructs a container with as many elements as the range [first,last), 
+		
 		template <class InputIterator> 
 		vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
 		{
+			_size = last - first;
+			std::cout<<"distance = "<<_size<<std::endl;
 
 		};
-		// copy constructor
+	
 		vector (const vector& x)
 		{
 			*this = x;
 			// std::cout<<"vector copy constructor called"<<std::endl;
 			
 		};
-		// copy (1)	
+		
 		vector &operator=(const vector& x)
 		{
 		
@@ -112,7 +126,7 @@ namespace ft
 				reserve(n);
 		
 			
-			for (; _size < n;_size++)
+			for (; _size < n; _size++)
 			{		
 				_alloc.construct(_p + _size, val);				
 			}
@@ -188,6 +202,7 @@ namespace ft
 			}
 			_alloc.construct(_p + _size, val);
 			++_size;
+			
 		}
 		void pop_back()
 		{
@@ -206,11 +221,14 @@ namespace ft
 			x = *this;
 			*this = tmp;
 		}
-		void clear();
-		allocator_type get_allocator() const
+		void clear()
 		{
-			
+			for (; _size > 0; --_size)
+			{
+				_alloc.destroy(_p +_size - 1);
+			}
 		}
+		
 		
 		// Element access:
 		const_reference operator[] (size_type n) const
@@ -274,15 +292,32 @@ namespace ft
 		}
 
 		// Iterators:
-		// iterator begin();
-		// const_iterator begin() const;
-		// iterator end();
-		// const_iterator end() const;
+		iterator begin(){
+			// std::cout<<"*_p = "<< *_p <<std::endl;
+			return (_p);
+		};
+		// const_iterator begin() const{
+		// 	return (pointer);
+		// }
+		iterator end(){
+			return (_p + _size);
+		}
+		// const_iterator end() const{
+		// 	return (pointer + _size);
+		// }
 		// reverse_iterator rbegin();
 		// const_reverse_iterator rbegin() const;
 		// reverse_iterator rend();
 		// const_reverse_iterator rend() const;
 
+
+		// Allocator:
+		allocator_type get_allocator() const
+		{
+			
+		}
+
+		// Non-member function overloads
 		template <class TF, class AllocF>
 		friend bool operator== (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs);
 		

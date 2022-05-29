@@ -1,0 +1,6 @@
+*.o
+*.exe
+containers
+.vscode
+a.out
+*.hpp.gch

@@ -4,3 +4,47 @@ Algorithms
 Containers
 Functions
 Iterators
+
+
+Substitution failure is not an error (SFINAE) 
+refers to a situation in C++ where an invalid substitution of template parameters is not in itself an error
+
+	
+	// std::integral_constant<bool,true> (aka std::true_type )
+	// std::integral_constant<bool,false> (aka std::false_type )
+	// template <class T> struct is_foo;
+	// static constexpr bool value true если T удовлетворяет критериям foo , false противном случае функции
+	// operator bool Возвращает value
+	// этот признак можно использоват в static_assert или std::enable_if 
+	// T Тип константы, v Значение константы.
+	// вызов value_type() возвращает тип, например int
+
+	template <class T, bool v>
+	struct integral_constant 
+	{
+		static constexpr bool value = v;
+		typedef bool value_type;
+		typedef integral_constant<T,v> type;
+		constexpr operator value_type(){ 
+			return v; }
+	};
+
+exmaple:
+
+int main()
+{
+	std::cout << "integral_constant<int, 5> == "
+		<< std::integral_constant<int, 5>::value << std::endl;
+	std::cout << "integral_constant<bool, false> == " << std::boolalpha
+		<< std::integral_constant<bool, false>::value << std::endl;
+	return (0);
+}
+
+integral_constant<int, 5> == 5
+integral_constant<bool, false> == false
+
+constexpr is initialized at compile time. Const may be initialized at compile time or run time
+initialization at runtime would be time-consuming 
+
+
+

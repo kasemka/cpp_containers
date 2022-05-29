@@ -6,7 +6,8 @@
 #include <vector>
 #include <iostream>
 #include <unistd.h>
-#include "iterator.hpp"
+#include "random_access_iterator_tag.hpp"
+
 
 
 
@@ -70,9 +71,18 @@ namespace ft
 		};
 		
 		template <class InputIterator> 
-		vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+		vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):
+		_alloc(alloc)
 		{
 			_size = last - first;
+			_capacity = _size;
+			_p = _alloc.allocate(_capacity);
+			int i = 0;	
+			for (; first != last; ++first)
+			{
+				_alloc.construct(_p + i, first);			
+			}
+
 			std::cout<<"distance = "<<_size<<std::endl;
 
 		};
@@ -178,15 +188,15 @@ namespace ft
 		}
 	
 		// Modifiers:
-		template <class InputIterator>
-		void assign (InputIterator first, InputIterator last)
-		{
+		// template <class InputIterator>
+		// void assign (InputIterator first, InputIterator last)
+		// {
 
-		}
-		void assign (size_type n, const value_type& val)
-		{
+		// }
+		// void assign (size_type n, const value_type& val)
+		// {
 
-		}
+		// }
 
 		void push_back (const value_type& val)
 		{

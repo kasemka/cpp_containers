@@ -21,8 +21,8 @@ namespace ft
 	typedef ft::integral_constant<bool,true>	true_type;
 	typedef ft::integral_constant<bool,false>	false_type;
 
-	template <class> struct is_integral							: public false_type {};
-	template <> struct is_integral <bool>						: public true_type {};
+	template <class> struct is_integral							: public false_type {};	//primary template
+	template <> struct is_integral <bool>						: public true_type {};	//explicit template specialization
 	template <> struct is_integral <char>						: public true_type {};
 	// template <> struct is_integral <char16_t>					: public true_type {};
 	// template <> struct is_integral <char32_t>					: public true_type {};
@@ -39,8 +39,8 @@ namespace ft
 	template <> struct is_integral <unsigned long long int>		: public true_type {};
 
 
-	template<bool Cond, class T = void> struct enable_if {};
-	template<class T> struct enable_if<true, T> { typedef T type; };
+	template<bool Cond, class T = void> struct enable_if {}; 			//primary template
+	template<class T> struct enable_if<true, T> { typedef T type; }; 	//explicit template specialization
 
 
 	template <class InputIterator1, class InputIterator2>

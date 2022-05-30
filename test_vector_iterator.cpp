@@ -57,19 +57,21 @@ int main()
 	std::cout<<std::endl;
 
 	
-	ft::vector<int> nums1Clone(nums1.begin(), nums1.begin()[2]);
+	// ft::vector<int> nums1Clone(nums1.begin(), nums1.begin()[2]);
 	// for (std::vector<int>::iterator it = nums1Clone.begin(); it != nums1Clone.end(); ++it)
 	// {
 	// 	std::cout<< YELLOW <<*it<<std::endl;
 	// }
 
 
-	std::vector<int> nums2Clone(nums2.begin(), nums2.begin()+2);
-	for (std::vector<int>::iterator it = nums2Clone.begin(); it != nums2Clone.end(); ++it)
-	{
-		std::cout<<GREEN<<*it<<std::endl;
-	}
-	std::cout<<std::endl;
+	
+
+	// std::vector<int> nums2Clone(nums2.begin(), nums2.begin()+2);
+	// for (std::vector<int>::iterator it = nums2Clone.begin(); it != nums2Clone.end(); ++it)
+	// {
+	// 	std::cout<<GREEN<<*it<<std::endl;
+	// }
+	// std::cout<<std::endl;
 	
 
 	return (0);

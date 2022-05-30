@@ -6,7 +6,8 @@
 #include <vector>
 #include <iostream>
 #include <unistd.h>
-#include "random_access_iterator_tag.hpp"
+#include "iterator.hpp"
+#include "utils.hpp"
 
 
 
@@ -54,6 +55,7 @@ namespace ft
 		_alloc(alloc), _size(0), _capacity(0), _p(0){
 			// std::cout<<"empty vector constructor called"<<std::endl;
 		};
+
 		explicit vector (size_type _n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()):
 		_alloc(alloc), _size(_n)
 		{
@@ -70,22 +72,24 @@ namespace ft
 			// std::cout<<"vector with n elements constructor called"<<std::endl;
 		};
 		
-		template <class InputIterator> 
-		vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):
-		_alloc(alloc)
-		{
-			_size = last - first;
-			_capacity = _size;
-			_p = _alloc.allocate(_capacity);
-			int i = 0;	
-			for (; first != last; ++first)
-			{
-				_alloc.construct(_p + i, first);			
-			}
+		// typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* =0
+		// template <class InIter> 
+		// vector (InIter first, InIter last, const allocator_type& alloc = allocator_type()
+		// ):
+		// _alloc(alloc)
+		// {
+		// 	_size = last - first;
+		// 	_capacity = _size;
+		// 	_p = _alloc.allocate(_capacity);
+		// 	int i = 0;	
+		// 	for (; first != last; ++first)
+		// 	{
+		// 		_alloc.construct(_p + i, first);
+		// 	}
 
-			std::cout<<"distance = "<<_size<<std::endl;
+		// 	std::cout<<"distance = "<<_size<<std::endl;
 
-		};
+		// };
 	
 		vector (const vector& x)
 		{
@@ -110,6 +114,7 @@ namespace ft
 			}
 			return (*this);
 		};
+		
 		~vector()
 		{
 			if (_p)

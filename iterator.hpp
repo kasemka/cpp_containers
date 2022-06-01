@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include "random_access_iterator_tag.hpp"
 
 namespace ft
 {
@@ -36,7 +37,7 @@ namespace ft
 		typedef T								value_type;
 		typedef T*								pointer;
 		typedef T&								reference;
-		typedef ft::random_access_iterator_tag	iterator_category;
+		typedef random_access_iterator_tag<T>	iterator_category;
 	};
 	
 	template< class T >
@@ -44,107 +45,107 @@ namespace ft
 	{
 		typedef ptrdiff_t						difference_type;
 		typedef T								value_type;
-		typedef T*								pointer;
-		typedef T&								reference;
-		typedef ft::random_access_iterator_tag	iterator_category;
+		typedef const T*						pointer;
+		typedef const T&						reference;
+		// typedef ft::random_access_iterator_tag	iterator_category;
 	};
 
 
 
-	template< typename T >
-	class random_access_iterator_tag
-	{
-		public:
-		// typedef T         value_type;
-		// typedef Distance  difference_type;
-  		typedef T* pointer;
-		typedef T& reference;
-		// typedef Category  iterator_category;
-		typedef typename std::allocator<T> ::pointer		pointer2;
+	// template< typename T >
+	// class random_access_iterator_tag
+	// {
+	// 	public:
+	// 	// typedef T         value_type;
+	// 	// typedef Distance  difference_type;
+  	// 	typedef T* pointer;
+	// 	typedef T& reference;
+	// 	// typedef Category  iterator_category;
+	// 	typedef typename std::allocator<T> ::pointer		pointer2;
 		
 		
-		public:
-		random_access_iterator_tag():elem(0)
-		{};
+	// 	public:
+	// 	random_access_iterator_tag():elem(0)
+	// 	{};
 
-		private:
-		pointer elem;
+	// 	private:
+	// 	pointer elem;
 
-		public:
+	// 	public:
 
-		random_access_iterator_tag &operator=(const random_access_iterator_tag &cp)
-		{
-			elem = cp;
-		}
+	// 	random_access_iterator_tag &operator=(const random_access_iterator_tag &cp)
+	// 	{
+	// 		elem = cp;
+	// 	}
 		
-		reference operator*(void) const
-		{
+	// 	reference operator*(void) const
+	// 	{
 
-			return (*elem);
-		}
+	// 		return (*elem);
+	// 	}
 
-		random_access_iterator_tag (pointer2 const &vecPoint)
-		{
-			elem = vecPoint;
-		}
+	// 	random_access_iterator_tag (pointer2 const &vecPoint)
+	// 	{
+	// 		elem = vecPoint;
+	// 	}
 
-		// Point& operator++();       // Prefix increment operator.
-		// Point operator++(int);     // Postfix increment operator.
+	// 	// Point& operator++();       // Prefix increment operator.
+	// 	// Point operator++(int);     // Postfix increment operator.
 
-		random_access_iterator_tag &operator++()
-		{
-			elem++;
-			return (*this);
-		}
-		random_access_iterator_tag operator++(int)
-		{
-			random_access_iterator_tag temp = *this;
-			++*this;
-			return temp;
-		}
+	// 	random_access_iterator_tag &operator++()
+	// 	{
+	// 		elem++;
+	// 		return (*this);
+	// 	}
+	// 	random_access_iterator_tag operator++(int)
+	// 	{
+	// 		random_access_iterator_tag temp = *this;
+	// 		++*this;
+	// 		return temp;
+	// 	}
 
-		// bool operator!=(pointer2 const &vecPoint)
-		// {
-		// 	return (*elem != *vecPoint);
-		// }
+	// 	// bool operator!=(pointer2 const &vecPoint)
+	// 	// {
+	// 	// 	return (*elem != *vecPoint);
+	// 	// }
 
-		// bool operator!=(pointer const &cp)
-		// {
-		// 	return (*elem != *(cp.elem));
-		// }
+	// 	// bool operator!=(pointer const &cp)
+	// 	// {
+	// 	// 	return (*elem != *(cp.elem));
+	// 	// }
 
 	
-		bool operator !=(random_access_iterator_tag const &cp)
-		{
-			// std::cout<<"i ma here\n";
-			return (elem != cp.elem);
-		}
+	// 	bool operator !=(random_access_iterator_tag const &cp)
+	// 	{
+	// 		// std::cout<<"i ma here\n";
+	// 		return (elem != cp.elem);
+	// 	}
 
-		// random_access_iterator_tag &operator==(const random_access_iterator_tag &cp)
-		// {
-		// 	return (*elem == *elem);
-		// }
-		// random_access_iterator_tag operator!=(const random_access_iterator_tag &cp)
-		// {
-		// 	return (*elem != *elem);
-		// }
-		// random_access_iterator_tag &operator>=(const random_access_iterator_tag &cp)
-		// {
-		// 	return (*elem >= *elem);
-		// }
-		// random_access_iterator_tag &operator<=(const random_access_iterator_tag &cp)
-		// {
-		// 	return (*elem <= *elem);
-		// }
-		// random_access_iterator_tag &operator>(const random_access_iterator_tag &cp)
-		// {
-		// 	return (*elem > *elem);
-		// }
-		// random_access_iterator_tag &operator<(const random_access_iterator_tag &cp)
-		// {
-		// 	return (*elem < *elem);
-		// }
-	};
+	// 	// random_access_iterator_tag &operator==(const random_access_iterator_tag &cp)
+	// 	// {
+	// 	// 	return (*elem == *elem);
+	// 	// }
+	// 	// random_access_iterator_tag operator!=(const random_access_iterator_tag &cp)
+	// 	// {
+	// 	// 	return (*elem != *elem);
+	// 	// }
+	// 	// random_access_iterator_tag &operator>=(const random_access_iterator_tag &cp)
+	// 	// {
+	// 	// 	return (*elem >= *elem);
+	// 	// }
+	// 	// random_access_iterator_tag &operator<=(const random_access_iterator_tag &cp)
+	// 	// {
+	// 	// 	return (*elem <= *elem);
+	// 	// }
+	// 	// random_access_iterator_tag &operator>(const random_access_iterator_tag &cp)
+	// 	// {
+	// 	// 	return (*elem > *elem);
+	// 	// }
+	// 	// random_access_iterator_tag &operator<(const random_access_iterator_tag &cp)
+	// 	// {
+	// 	// 	return (*elem < *elem);
+	// 	// }
+	// };
 
 	
 }

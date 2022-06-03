@@ -68,3 +68,38 @@ Specialization must be declared before the first use that would cause implicit i
 
 Partial template specialization
 
+Если наследоваться от др класса, то типы переменных, определеных через typedef нужно заново определять в доч классе, либо обращ через наемспейс наследника как в примере ниже:
+#include <iostream>
+#include <vector>
+
+template <class T>
+struct iter {
+	typedef T			value_typeT;
+	value_typeT num;
+	iter():num(5){};
+};
+
+template <class T>
+struct iterNew : iter<T>
+{
+	void print()
+	{
+		typename iterNew<T>::value_typeT V1;
+		V1 = 1;
+		
+		std::cout<<V1<<std::endl;
+		std::cout<<typeid(V1).name()<<std::endl;
+	};
+
+};
+
+int main()
+{
+	iterNew<int> a;
+	a.print();
+	
+	return 0;
+}
+
+если в дочке нет переменной abc, а в родителе есть, то чтобы распечатать обязательно нужно вызывать через this->abc
+так как в дочке нет abc.

@@ -8,7 +8,6 @@
 #include <unistd.h>
 #include "iterator.hpp"
 #include "utils.hpp"
-#include "random_access_iterator_tag.hpp"
 
 
 // class Iterator
@@ -23,39 +22,20 @@ namespace ft
 		typedef Alloc													allocator_type;
 		typedef typename allocator_type::reference						reference;
 		typedef typename allocator_type::const_reference				const_reference;
-		// typedef typename allocator_type::pointer						pointer;
 		typedef T*														pointer;
-		typedef typename allocator_type::const_pointer					const_pointer;
-
-		typedef typename ft::random_access_iterator_tag<value_type> 	iterator;
-
-
-
-		// typedef typename const_iterator;
+		typedef const T*												const_pointer;
+		typedef class iteratorVector<value_type*>						iterator;
+		typedef class iteratorVector<const value_type*>					const_iterator;
 		// typedef typename reverse_iterator;
 		// typedef typename const_reverse_iterator;
 		// typedef typename difference_type;
+		typedef size_t													size_type;
 
-		typedef size_t										size_type;
-
-		private:
-
-		allocator_type	_alloc;
-		size_type		_size;
-		size_type		_capacity;
-		// value_type		*_name;
-		pointer			_p;
-		pointer			_end;
-
-		// iterator startIt;
-		// iterator endIt;
-		
-		
 
 		public:
 		
 		explicit vector (const allocator_type& alloc = allocator_type()):
-		_alloc(alloc), _size(0), _capacity(0), _p(0){
+		_alloc(alloc), _capacity(0), _size(0), _p(0){
 			// std::cout<<"empty vector constructor called"<<std::endl;
 		};
 
@@ -64,9 +44,9 @@ namespace ft
 		{
 			_capacity = _size;
 			_p = _alloc.allocate(_capacity);	
-			for (int i = 0; i < _n; ++i)
+			for (size_type i = 0; i < _n; ++i)
 			{
-					_alloc.construct(_p + i, val);			
+					_alloc.construct(_p + i, val);
 			}
 			
 			// startIt = _p;
@@ -118,10 +98,8 @@ namespace ft
 			return (*this);
 		};
 		
-		~vector()
-		{
-			if (_p)
-			{
+		~vector(){
+			if (_p){
 				for (size_t i = 0; i<_size; i++)
 					_alloc.destroy(_p + i);
 				_alloc.deallocate(_p, _capacity);
@@ -134,10 +112,7 @@ namespace ft
 		{
 			return _size;
 		}
-		size_type max_size() const
-		{
-			return (allocator_type().max_size());
-		}
+		size_type max_size() const { return (allocator_type().max_size()); }
 		void resize (size_type n, value_type val = value_type())
 		{
 			if (_capacity < n)
@@ -157,31 +132,15 @@ namespace ft
 			
 		
 		}
-		size_type capacity() const
-		{
-			return _capacity;
-		}
-		bool empty() const
-		{
-			
-			return (_size > 0 ? false : true);
-		}
+		size_type capacity() const { return _capacity; }
+		bool empty() const { return (_size > 0 ? false : true); }
 		void reserve (size_type n)
 		{
-			if (n > this->max_size())
-			{
-				// std::cerr << "n > max size"<<std:: endl;
+			if (n > this->max_size() || n <= _capacity)
 				return ;
-			}
-			if (n <= _capacity)
-			{
-				// std::cerr << "n > max size"<<std:: endl;
-				return ;
-			}
 
 			pointer _oldp = _p;
 			size_type _oldcap = _capacity;
-		
 
 			_capacity = n;
 			_p = _alloc.allocate(_capacity);
@@ -239,45 +198,31 @@ namespace ft
 			x = *this;
 			*this = tmp;
 		}
-		void clear()
-		{
+		void clear() {
 			for (; _size > 0; --_size)
-			{
-				_alloc.destroy(_p +_size - 1);
-			}
+				_alloc.destroy(_p +_size - 1); 
 		}
 		
 		
 		// Element access:
-		const_reference operator[] (size_type n) const
-        {
-            return(_p[n]);
-        }
-
-		reference operator[] (size_type n) 
-        {
-            return(_p[n]);
-        }
-		reference at (size_type n)
-		{
+		const_reference operator[] (size_type n) const { return(_p[n]); }
+		reference operator[] (size_type n) { return(_p[n]); }
+		reference at (size_type n){
 			if (_size > 0)
 				return(_p[n]);
 			else 
-	     		throw std::invalid_argument("");
+				throw std::invalid_argument("");
 			//intVector2.at(0): zsh: abort      ./a.out | 
 			// zsh: done       cat -e
-		
 		}
 
-		const_reference at (size_type n) const
-		{
+		const_reference at (size_type n) const {
 			if (_size > 0)
 				return(_p[n]);
 			else 
-	     		throw std::invalid_argument("");
+				throw std::invalid_argument("");
 		}
-		reference front()
-		{
+		reference front(){
 			// if (_size > 0)
 			return _p[0];
 			// else underfined behaviour 
@@ -297,7 +242,7 @@ namespace ft
 			// else
 			// 	throw;
 			// else 
-	     	// throw std::invalid_argument("");
+		 	// throw std::invalid_argument("");
 			// else underfined behaviour 
 			//
 		}
@@ -310,19 +255,10 @@ namespace ft
 		}
 
 		// Iterators:
-		iterator begin(){
-			// std::cout<<"*_p = "<< *_p <<std::endl;
-			return (_p);
-		};
-		// const_iterator begin() const{
-		// 	return (pointer);
-		// }
-		iterator end(){
-			return (_p + _size);
-		}
-		// const_iterator end() const{
-		// 	return (pointer + _size);
-		// }
+		iterator begin(){ return (_p); };
+		const_iterator begin() const { return (_p); }
+		iterator end(){ return (_p + _size); }
+		const_iterator end() const{ return (_p + _size);}
 		// reverse_iterator rbegin();
 		// const_reverse_iterator rbegin() const;
 		// reverse_iterator rend();
@@ -330,10 +266,7 @@ namespace ft
 
 
 		// Allocator:
-		allocator_type get_allocator() const
-		{
-			
-		}
+		allocator_type get_allocator() const {}
 
 		// Non-member function overloads
 		template <class TF, class AllocF>
@@ -356,6 +289,13 @@ namespace ft
 
 		template <class TF, class AllocF>
 		friend void swap (vector<TF, AllocF>& x, vector<TF, AllocF>& y);
+
+
+		private:
+		allocator_type	_alloc;
+		pointer			_p;
+		size_type		_size;
+		size_type		_capacity;
 	};
 
 

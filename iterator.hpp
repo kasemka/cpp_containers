@@ -3,12 +3,48 @@
 
 #include <iostream>
 #include <memory>
-#include "random_access_iterator_tag.hpp"
+#include <iterator>
+
 
 namespace ft
 {
+	struct random_access_iterator_tag {};
+	// iterator traits
+	// iterator_traits<Iterator> will only have the nested types if Iterator::iterator_category
+	//    exists.  Else iterator_traits<Iterator> will be an empty class.  This is a
+	//    conforming extension which allows some programs to compile and behave as
+	//    the client expects instead of failing at compile time.
+	template< class T >
+	struct iterator_traits
+	{
+		typedef typename T::difference_type		difference_type;
+		typedef typename T::value_type			value_type;
+		typedef typename T::pointer				pointer;
+		typedef typename T::reference 			reference;
+		typedef typename T::iterator_category	iterator_category;
+	};
+
+	template< class T >
+	struct iterator_traits<T*>
+	{
+		typedef ptrdiff_t							difference_type;
+		typedef T									value_type;
+		typedef T*									pointer;
+		typedef T&									reference;
+		typedef ft::random_access_iterator_tag		iterator_category;
+	};
 	
-	// iterator
+	template< class T >
+	struct iterator_traits<const T*>
+	{
+		typedef ptrdiff_t							difference_type;
+		typedef T									value_type;
+		typedef const T*							pointer;
+		typedef const T&							reference;
+		typedef ft::random_access_iterator_tag		iterator_category;
+	};
+
+// iterator
 	template <class Category, class T, class Distance = ptrdiff_t, class Pointer = T*, class Reference = T&>
   	struct iterator {
 		typedef T			value_type;
@@ -19,133 +55,40 @@ namespace ft
 	};
 
 
-	// iterator traits
-	template< class Iter >
-	struct iterator_traits
-	{
-		typedef typename Iter::difference_type		difference_type;
-		typedef typename Iter::value_type			value_type;
-		typedef typename Iter::pointer				pointer;
-		typedef typename Iter::reference 			reference;
-		typedef typename Iter::iterator_category	iterator_category;
-	};
-
 	template< class T >
-	struct iterator_traits<T*>
+	struct iteratorVector : ft::iterator<typename ft::iterator_traits<T>::iterator_category, typename ft::iterator_traits<T>::value_type >
 	{
-		typedef ptrdiff_t						difference_type;
-		typedef T								value_type;
-		typedef T*								pointer;
-		typedef T&								reference;
-		typedef random_access_iterator_tag<T>	iterator_category;
+		iteratorVector():elem(0){};
+		iteratorVector(typename iteratorVector::pointer const &vecPoint):elem(vecPoint){}
+		iteratorVector(iteratorVector const &cp){ *this = cp;};
+		iteratorVector &operator=(iteratorVector const &cp){
+			if (this != &cp)
+				this->elem =cp.elem;
+			return (*this);
+		};
+		
+		
+		bool operator!=(iteratorVector const &it){return (elem != it.elem);};
+		bool operator==(iteratorVector const &it){return (elem == it.elem);};
+
+		typename iteratorVector::reference operator*(void) const{return (*elem);};
+		typename iteratorVector::pointer operator->(void) const{return &(*elem);};
+
+		iteratorVector &operator++(){ elem++; return (*this);};
+		iteratorVector operator++(int){ iteratorVector temp = *this; ++*this; return temp;};
+		iteratorVector &operator--(){ elem--; return (*this);};
+		iteratorVector operator--(int){ iteratorVector temp = *this; --*this; return temp;};
+
+		iteratorVector &operator+=(int num){ elem = elem + num; return (*this);}
+		iteratorVector &operator-=(int num){ elem = elem - num; return (*this);}
+		
+		iteratorVector operator+(int num){ return (iteratorVector(this->elem + num));}
+		iteratorVector operator-(int num){ return (iteratorVector(this->elem + num));}
+
+
+		private:
+			typename iteratorVector::pointer elem;
 	};
-	
-	template< class T >
-	struct iterator_traits<const T*>
-	{
-		typedef ptrdiff_t						difference_type;
-		typedef T								value_type;
-		typedef const T*						pointer;
-		typedef const T&						reference;
-		// typedef ft::random_access_iterator_tag	iterator_category;
-	};
-
-
-
-	// template< typename T >
-	// class random_access_iterator_tag
-	// {
-	// 	public:
-	// 	// typedef T         value_type;
-	// 	// typedef Distance  difference_type;
-  	// 	typedef T* pointer;
-	// 	typedef T& reference;
-	// 	// typedef Category  iterator_category;
-	// 	typedef typename std::allocator<T> ::pointer		pointer2;
-		
-		
-	// 	public:
-	// 	random_access_iterator_tag():elem(0)
-	// 	{};
-
-	// 	private:
-	// 	pointer elem;
-
-	// 	public:
-
-	// 	random_access_iterator_tag &operator=(const random_access_iterator_tag &cp)
-	// 	{
-	// 		elem = cp;
-	// 	}
-		
-	// 	reference operator*(void) const
-	// 	{
-
-	// 		return (*elem);
-	// 	}
-
-	// 	random_access_iterator_tag (pointer2 const &vecPoint)
-	// 	{
-	// 		elem = vecPoint;
-	// 	}
-
-	// 	// Point& operator++();       // Prefix increment operator.
-	// 	// Point operator++(int);     // Postfix increment operator.
-
-	// 	random_access_iterator_tag &operator++()
-	// 	{
-	// 		elem++;
-	// 		return (*this);
-	// 	}
-	// 	random_access_iterator_tag operator++(int)
-	// 	{
-	// 		random_access_iterator_tag temp = *this;
-	// 		++*this;
-	// 		return temp;
-	// 	}
-
-	// 	// bool operator!=(pointer2 const &vecPoint)
-	// 	// {
-	// 	// 	return (*elem != *vecPoint);
-	// 	// }
-
-	// 	// bool operator!=(pointer const &cp)
-	// 	// {
-	// 	// 	return (*elem != *(cp.elem));
-	// 	// }
-
-	
-	// 	bool operator !=(random_access_iterator_tag const &cp)
-	// 	{
-	// 		// std::cout<<"i ma here\n";
-	// 		return (elem != cp.elem);
-	// 	}
-
-	// 	// random_access_iterator_tag &operator==(const random_access_iterator_tag &cp)
-	// 	// {
-	// 	// 	return (*elem == *elem);
-	// 	// }
-	// 	// random_access_iterator_tag operator!=(const random_access_iterator_tag &cp)
-	// 	// {
-	// 	// 	return (*elem != *elem);
-	// 	// }
-	// 	// random_access_iterator_tag &operator>=(const random_access_iterator_tag &cp)
-	// 	// {
-	// 	// 	return (*elem >= *elem);
-	// 	// }
-	// 	// random_access_iterator_tag &operator<=(const random_access_iterator_tag &cp)
-	// 	// {
-	// 	// 	return (*elem <= *elem);
-	// 	// }
-	// 	// random_access_iterator_tag &operator>(const random_access_iterator_tag &cp)
-	// 	// {
-	// 	// 	return (*elem > *elem);
-	// 	// }
-	// 	// random_access_iterator_tag &operator<(const random_access_iterator_tag &cp)
-	// 	// {
-	// 	// 	return (*elem < *elem);
-	// 	// }
-	// };
 
 	
 }

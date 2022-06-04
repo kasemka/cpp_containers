@@ -28,14 +28,13 @@ namespace ft
 		typedef class iteratorVector<const value_type*>					const_iterator;
 		// typedef typename reverse_iterator;
 		// typedef typename const_reverse_iterator;
-		// typedef typename difference_type;
+		typedef typename iteratorVector<value_type*>::difference_type	difference_type;
 		typedef size_t													size_type;
 
 
 		public:
 		
-		explicit vector (const allocator_type& alloc = allocator_type()):
-		_alloc(alloc), _capacity(0), _size(0), _p(0){
+		explicit vector (const allocator_type& alloc = allocator_type()):_alloc(alloc), _capacity(0), _size(0), _p(0){
 			// std::cout<<"empty vector constructor called"<<std::endl;
 		};
 
@@ -55,24 +54,22 @@ namespace ft
 			// std::cout<<"vector with n elements constructor called"<<std::endl;
 		};
 		
-		// typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* =0
-		// template <class InIter> 
-		// vector (InIter first, InIter last, const allocator_type& alloc = allocator_type()
-		// ):
-		// _alloc(alloc)
-		// {
-		// 	_size = last - first;
-		// 	_capacity = _size;
-		// 	_p = _alloc.allocate(_capacity);
-		// 	int i = 0;	
-		// 	for (; first != last; ++first)
-		// 	{
-		// 		_alloc.construct(_p + i, first);
-		// 	}
+		
+		template <class InIter> 
+		vector (InIter first, InIter last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type* =0) :_alloc(alloc)
+		{
 
-		// 	std::cout<<"distance = "<<_size<<std::endl;
+			
+			_size = last - first;
+			_capacity = _size;
+			_p = _alloc.allocate(_capacity);
+			for (int i = 0;	first != last; ++first){
+				_alloc.construct(_p + i, first);
+			}
 
-		// };
+			// std::cout<<"distance = "<<_size<<std::endl;
+
+		};
 	
 		vector (const vector& x)
 		{
@@ -121,7 +118,7 @@ namespace ft
 			
 			for (; _size < n; _size++)
 			{		
-				_alloc.construct(_p + _size, val);				
+				_alloc.construct(_p + _size, val);
 			}
 			
 			for (; _size > n;)

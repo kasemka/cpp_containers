@@ -66,7 +66,7 @@ int main()
 
 	
 
-	// std::vector<int> nums2Clone(nums2.begin(), nums2.begin()+2);
+	std::vector<int> nums2Clone(nums2.begin(), nums2.begin()+2);
 	// for (std::vector<int>::iterator it = nums2Clone.begin(); it != nums2Clone.end(); ++it)
 	// {
 	// 	std::cout<<GREEN<<*it<<std::endl;

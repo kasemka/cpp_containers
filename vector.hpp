@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "iterator.hpp"
 #include "utils.hpp"
+#include <algorithm>
 
 
 // class Iterator
@@ -39,36 +40,16 @@ namespace ft
 		};
 
 		explicit vector (size_type _n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()):
-		_alloc(alloc), _size(_n)
+		_alloc(alloc), _capacity(0), _size(0), _p(0)
 		{
-			_capacity = _size;
-			_p = _alloc.allocate(_capacity);	
-			for (size_type i = 0; i < _n; ++i)
-			{
-					_alloc.construct(_p + i, val);
-			}
-			
-			// startIt = _p;
-			// endIt = _p[_size - 1];
-
-			// std::cout<<"vector with n elements constructor called"<<std::endl;
+			this->assign(_n, val);
 		};
 		
 		
 		template <class InIter> 
-		vector (InIter first, InIter last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type* =0) :_alloc(alloc)
+		vector (InIter first, InIter last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type =0) :_alloc(alloc), _capacity(0), _size(0), _p(0)
 		{
-
-			
-			_size = last - first;
-			_capacity = _size;
-			_p = _alloc.allocate(_capacity);
-			for (int i = 0;	first != last; ++first){
-				_alloc.construct(_p + i, first);
-			}
-
-			// std::cout<<"distance = "<<_size<<std::endl;
-
+			this->assign(first, last);
 		};
 	
 		vector (const vector& x)
@@ -99,7 +80,8 @@ namespace ft
 			if (_p){
 				for (size_t i = 0; i<_size; i++)
 					_alloc.destroy(_p + i);
-				_alloc.deallocate(_p, _capacity);
+				if (_capacity>0)
+					_alloc.deallocate(_p, _capacity);
 			}
 		};
 
@@ -114,53 +96,77 @@ namespace ft
 		{
 			if (_capacity < n)
 				reserve(n);
-		
-			
 			for (; _size < n; _size++)
-			{		
 				_alloc.construct(_p + _size, val);
-			}
-			
 			for (; _size > n;)
-			{
-				
 				this->pop_back();
-			}
-			
-		
 		}
 		size_type capacity() const { return _capacity; }
 		bool empty() const { return (_size > 0 ? false : true); }
 		void reserve (size_type n)
 		{
+			
 			if (n > this->max_size() || n <= _capacity)
 				return ;
 
-			pointer _oldp = _p;
-			size_type _oldcap = _capacity;
+			pointer		_oldp = _p;
+			size_type	_oldcap = _capacity;
 
 			_capacity = n;
 			_p = _alloc.allocate(_capacity);
-			for (size_type i = 0; i < _size; ++i)
-				_alloc.construct(_p + i, *(_oldp + i));
-	
-			for (size_type i = 0; i < _size; ++i)
-				_alloc.destroy(_oldp + i);
-			_alloc.deallocate(_oldp, _oldcap);
+		
+			
+			if (_oldcap > 0){
+				for (size_type i = 0; i < _size; ++i)
+					_alloc.construct(_p + i, *(_oldp + i));
+				for (size_type i = 0; i < _size; ++i)
+					_alloc.destroy(_oldp + i);
+				_alloc.deallocate(_oldp, _oldcap);
+			}
+			
 			
 			
 		}
 	
 		// Modifiers:
-		// template <class InputIterator>
-		// void assign (InputIterator first, InputIterator last)
-		// {
+		template <class InIter>
+		void assign (InIter first, InIter last, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type = 0)
+		{
+			this->clear();
+			_size = last - first;
+		
+			this->reserve(_size);
+			// if (_capacity < _size)
+			// {
+			// 	if (_capacity > 0)
+			// 		_alloc.deallocate(_p, _capacity);
+			// 	_capacity = _size;
+			// 	_p = _alloc.allocate(_capacity);
+			// }
+			
+			for (int i = 0;	first != last; ++first){
+				_alloc.construct(_p + i, *first);
+				i++;
+			}
+		}
 
-		// }
-		// void assign (size_type n, const value_type& val)
-		// {
+		void assign (size_type n, const value_type& val)
+		{
+			this->clear();
+			_size = n;
 
-		// }
+			this->reserve(_size);
+			// if (_capacity < _size)
+			// {
+			// 	if (_capacity > 0)
+			// 		_alloc.deallocate(_p, _capacity);
+			// 	_capacity = _size;
+			// 	_p = _alloc.allocate(_capacity);
+			// }
+
+			for (size_type i = 0; i < _size; ++i)
+				_alloc.construct(_p + i, val);
+		}
 
 		void push_back (const value_type& val)
 		{
@@ -183,10 +189,44 @@ namespace ft
 			_size--;
 			_alloc.destroy(_p + _size);
 		}
-		// iterator insert (iterator position, const value_type& val);
-		// void insert (iterator position, size_type n, const value_type& val);
-		// template <class InputIterator>
-		// void insert (iterator position, InputIterator first, InputIterator last);
+		iterator insert (iterator position, const value_type& val)
+		{
+			_size++;
+		
+			iterator iter = this->begin();
+			for (; iter != position && iter != this->end(); ++iter);
+			if (iter == this->end())
+				return NULL;
+			
+			
+
+			if (_capacity < _size)
+			{
+
+				int i = (position - this->begin())/sizeof(iter);
+				std::cout<<"post "<<i<<std::endl;
+				reserve(_size);
+				iter = this->begin();
+				for (int j = 0; j < i; ++j)
+					iter++;
+			}
+
+			std::move_backward(iter, this->end() - 1, this->end());
+			return (iter);
+
+		}
+
+		void insert (iterator position, size_type n, const value_type& val)
+		{
+			
+		}
+
+		template <class InIter>
+		void insert (iterator position, InIter first, InIter last)
+		{
+
+		}
+
 		// iterator erase (iterator position);
 		// iterator erase (iterator first, iterator last);
 		void swap (vector& x)
@@ -248,7 +288,7 @@ namespace ft
 			// if (_size > 0)
 				return _p[_size - 1];
 			// else 
-	     	// 	throw ;
+			// 	throw ;
 		}
 
 		// Iterators:

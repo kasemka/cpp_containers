@@ -88,8 +88,8 @@ namespace ft
 		iteratorVector &operator+=(int num){ _elem = _elem + num; return (*this);}
 		iteratorVector &operator-=(int num){ _elem = _elem - num; return (*this);}
 		
-		iteratorVector operator+(int num) const { return (iteratorVector(this->_elem + num));}
-		iteratorVector operator-(int num) const { return (iteratorVector(this->_elem + num));}
+		iteratorVector operator+(int num) const { return (iteratorVector(_elem + num)); }
+		iteratorVector operator-(int num) const { return (iteratorVector(_elem - num)); }
 		int operator-(iteratorVector const &it) const { return (this->_elem - it._elem); };
 		int operator+(iteratorVector const &it) const { return (this->_elem + it._elem); };
 

@@ -3,9 +3,9 @@
 #include <vector>
 #include <string>
 
-#define GREEN "\033[1;32m"
+#define GREEN "\033[0;32m"
 #define YELLOW "\033[0;33m"
-#define RED "\033[1;31m"
+#define RED "\033[0;31m"
 #define SHALLOW "\033[0m"
 
 
@@ -112,28 +112,37 @@ int main()
 	first.assign(1, 0);
 	std::cout<<GREEN << "Size of first: " << int (first.size()) <<", capacity " <<(first.capacity()) << '\n';
 
+	std::cout <<std::endl;
 	/******************************************/
 	/*             insert check               */
 	/******************************************/
 
-	ft::vector<int> num1(2, 100);
-	ft::vector<int>::iterator iter = num1.begin();
+	std::cout<< SHALLOW << "insert check FT" <<std::endl;
+	ft::vector<int> numVecFt(1, 100);
+	numVecFt.push_back(200);
+	numVecFt.push_back(300);
+	ft::vector<int>::iterator iter = numVecFt.begin();
 
 	// ft::vector<int> num2(3, 300);
-	num1.insert(iter, 1000);
+	numVecFt.insert(iter, 1000);
 
-	for (ft::vector<int>::iterator b = num1.begin(); b!=num1.end();++b)
-		std::cout<<*b<<std::endl;
-
-
-	std::vector<int> num1s(2, 100);
-	std::vector<int>::iterator iters = num1s.begin();
+	for (ft::vector<int>::iterator b = numVecFt.begin(); b!=numVecFt.end();++b)
+		std::cout<<YELLOW<<*b<<std::endl;
+	std::cout<<YELLOW << "Size of ft numVecFt: " << int (numVecFt.size()) <<", capacity " <<(numVecFt.capacity()) << '\n';
+	
+	
+	std::cout<< SHALLOW << "insert check STD" <<std::endl;
+	std::vector<int> numVecStd(1, 100);
+	numVecStd.push_back(200);
+	numVecStd.push_back(300);
+	std::vector<int>::iterator iters = numVecStd.begin();
 
 	// ft::vector<int> num2(3, 300);
-	num1s.insert(iters, 1000);
+	numVecStd.insert(iters, 1000);
 
-	for (std::vector<int>::iterator b = num1s.begin(); b!=num1s.end();++b)
-		std::cout<<*b<<std::endl;
+	for (std::vector<int>::iterator b = numVecStd.begin(); b!=numVecStd.end();++b)
+		std::cout<<GREEN <<*b<<std::endl;
+	std::cout<<GREEN << "Size of std numVecStd: " << int (numVecStd.size()) <<", capacity " <<(numVecStd.capacity()) << '\n';
 
 
 	return (0);

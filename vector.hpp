@@ -25,8 +25,8 @@ namespace ft
 		typedef typename allocator_type::const_reference				const_reference;
 		typedef T*														pointer;
 		typedef const T*												const_pointer;
-		typedef class iteratorVector<value_type*>						iterator;
-		typedef class iteratorVector<const value_type*>					const_iterator;
+		typedef  iteratorVector<value_type*>						iterator;
+		typedef  iteratorVector<const value_type*>					const_iterator;
 		// typedef typename reverse_iterator;
 		// typedef typename const_reverse_iterator;
 		typedef typename iteratorVector<value_type*>::difference_type	difference_type;
@@ -35,19 +35,16 @@ namespace ft
 
 		public:
 		
-		explicit vector (const allocator_type& alloc = allocator_type()):_alloc(alloc), _capacity(0), _size(0), _p(0){
-			// std::cout<<"empty vector constructor called"<<std::endl;
-		};
+		explicit vector (const allocator_type& alloc = allocator_type()):_alloc(alloc), _p(0),  _size(0), _capacity(0) {};
 
 		explicit vector (size_type _n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()):
-		_alloc(alloc), _capacity(0), _size(0), _p(0)
-		{
+		_alloc(alloc), _p(0),  _size(0), _capacity(0) {
 			this->assign(_n, val);
 		};
 		
 		
 		template <class InIter> 
-		vector (InIter first, InIter last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type =0) :_alloc(alloc), _capacity(0), _size(0), _p(0)
+		vector (InIter first, InIter last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type =0) :_alloc(alloc), _p(0),  _size(0), _capacity(0)
 		{
 			this->assign(first, last);
 		};
@@ -130,19 +127,19 @@ namespace ft
 	
 		// Modifiers:
 		template <class InIter>
-		void assign (InIter first, InIter last, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type = 0)
+		void assign (InIter first, InIter last, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type* = 0)
 		{
 			this->clear();
 			_size = last - first;
 		
-			this->reserve(_size);
-			// if (_capacity < _size)
-			// {
-			// 	if (_capacity > 0)
-			// 		_alloc.deallocate(_p, _capacity);
-			// 	_capacity = _size;
-			// 	_p = _alloc.allocate(_capacity);
-			// }
+			// this->reserve(_size);
+			if (_capacity < _size)
+			{
+				if (_capacity > 0)
+					_alloc.deallocate(_p, _capacity);
+				_capacity = _size;
+				_p = _alloc.allocate(_capacity);
+			}
 			
 			for (int i = 0;	first != last; ++first){
 				_alloc.construct(_p + i, *first);
@@ -152,17 +149,17 @@ namespace ft
 
 		void assign (size_type n, const value_type& val)
 		{
-			this->clear();
+			clear();
 			_size = n;
 
-			this->reserve(_size);
-			// if (_capacity < _size)
-			// {
-			// 	if (_capacity > 0)
-			// 		_alloc.deallocate(_p, _capacity);
-			// 	_capacity = _size;
-			// 	_p = _alloc.allocate(_capacity);
-			// }
+			// reserve(_size);
+			if (_capacity < _size)
+			{
+				if (_capacity > 0)
+					_alloc.deallocate(_p, _capacity);
+				_capacity = _size;
+				_p = _alloc.allocate(_capacity);
+			}
 
 			for (size_type i = 0; i < _size; ++i)
 				_alloc.construct(_p + i, val);
@@ -184,50 +181,103 @@ namespace ft
 			++_size;
 			
 		}
+		
 		void pop_back()
 		{
 			_size--;
 			_alloc.destroy(_p + _size);
 		}
+
 		iterator insert (iterator position, const value_type& val)
 		{
-			_size++;
-		
-			iterator iter = this->begin();
-			for (; iter != position && iter != this->end(); ++iter);
-			if (iter == this->end())
-				return NULL;
-			
-			
-
-			if (_capacity < _size)
-			{
-
-				int i = (position - this->begin())/sizeof(iter);
-				std::cout<<"post "<<i<<std::endl;
-				reserve(_size);
-				iter = this->begin();
-				for (int j = 0; j < i; ++j)
-					iter++;
-			}
-
-			std::move_backward(iter, this->end() - 1, this->end());
-			return (iter);
-
+			insert(position, 1, val);
+			return (position);
 		}
 
 		void insert (iterator position, size_type n, const value_type& val)
 		{
+			if (position < this->begin() || position >= this->end())
+				return ;
+
+			int			indexPos = position - this->begin();	
+			pointer		_oldp = _p;
+			size_type	_oldcap = _capacity;
+			size_t		_oldsize = _size;
+	
+			_size += n; 
+			if (_capacity < _size)
+			{
+				_p = _alloc.allocate(_capacity);
+				_capacity = _size;
+			}
+
+			// size_t i = 1;
+			int pIndex = _size - 1;
+			int oIndex = _oldsize - 1;
+
+			while (iterator(_oldp + oIndex) >= position)
+				_p[pIndex--] = _oldp[oIndex--];
+			
+			while (pIndex >= 0 || pIndex >= indexPos)
+				_p[pIndex--] = val;
+
+			// pause();
+			for (int i = 0; i < indexPos; ++i)
+				_p[i] = _oldp[i];
+
+			if (_oldcap < _capacity)
+			{
+				for (size_type i = 0; i < _oldsize; ++i)
+					_alloc.destroy(_oldp + i);
+				_alloc.deallocate(_oldp, _oldcap);
+			}
+
+
+		}
+
+		// template <class InIter>
+		// void insert (iterator position, InIter first, InIter last)
+		// {
+		// 	if (position < this->begin() || position >= this->end())
+		// 		return ;
+
+		// 	int indexPos = position - this->begin();
+		// 	int n = last - first;
+			
+		// 	pointer		_oldp = _p;
+		// 	size_type	_oldcap = _capacity;
+		// 	size_t		_oldsize = _size;
+
+		// 	_size += n; 
+		// 	int indexEnd = indexPos + n - 1;
+		// 	if (_capacity < _size)
+		// 	{
+		// 		_p = _alloc.allocate(_capacity);
+		// 		_capacity = _size;
+		// 	}
+		// 	for (int i = _size - 1; i > indexEnd; --i)
+		// 		_p[i] = _oldp[i - 1];
+
+		// 	for (int i = indexEnd; i >= indexPos; --i)
+		// 		_p[i] =  val;
+		// 	--indexPos;
+		// 	for (int i = indexPos; i >= 0; --i)
+		// 		_p[i] = _oldp[i - 1];
+
+		// 	if (_oldcap < _capacity)
+		// 	{
+		// 		for (size_type i = 0; i < _oldsize; ++i)
+		// 			_alloc.destroy(_oldp + i);
+		// 		_alloc.deallocate(_oldp, _oldcap);
+		// 	}
+
+
+		// }
+
+		iterator erase (iterator position)
+		{
 			
 		}
-
-		template <class InIter>
-		void insert (iterator position, InIter first, InIter last)
-		{
-
-		}
-
-		// iterator erase (iterator position);
 		// iterator erase (iterator first, iterator last);
 		void swap (vector& x)
 		{
@@ -236,6 +286,7 @@ namespace ft
 			*this = tmp;
 		}
 		void clear() {
+			
 			for (; _size > 0; --_size)
 				_alloc.destroy(_p +_size - 1); 
 		}

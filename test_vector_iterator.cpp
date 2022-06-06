@@ -145,6 +145,34 @@ int main()
 	std::cout<<GREEN << "Size of std numVecStd: " << int (numVecStd.size()) <<", capacity " <<(numVecStd.capacity()) << '\n';
 
 
+
+	/******************************************/
+	/*             erase check               */
+	/******************************************/
+
+	std::cout<< SHALLOW << "erase check FT" <<std::endl;
+	ft::vector<int>::iterator begN = numVecFt.begin();
+	ft::vector<int>::iterator endN = numVecFt.end();
+
+	std::cout<<YELLOW << "before erase ft numVecFt " << int (numVecFt.size()) <<", capacity " <<(numVecFt.capacity()) << '\n';
+	numVecFt.erase(begN);
+	numVecFt.erase(endN);
+	std::cout<<YELLOW << "after erase ft numVecFt " << int (numVecFt.size()) <<", capacity " <<(numVecFt.capacity()) << '\n';
+	for (ft::vector<int>::iterator b = numVecFt.begin(); b!=numVecFt.end();++b)
+		std::cout<<YELLOW<<*b<<std::endl;
+
+
+	std::cout<< SHALLOW << "erase check STD" <<std::endl;
+	std::vector<int>::iterator begNs = numVecStd.begin();
+	std::vector<int>::iterator endNs = numVecStd.end();
+
+	std::cout<<YELLOW << "before erase STD numVecFt " << int (numVecStd.size()) <<", capacity " <<(numVecStd.capacity()) << '\n';
+	numVecStd.erase(begNs);
+	numVecStd.erase(endNs);
+	std::cout<<YELLOW << "after erase STD numVecFt " << int (numVecStd.size()) <<", capacity " <<(numVecStd.capacity()) << '\n';
+	for (std::vector<int>::iterator b = numVecStd.begin(); b!=numVecStd.end();++b)
+		std::cout<<YELLOW<<*b<<std::endl;
+
 	return (0);
 }
 

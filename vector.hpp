@@ -74,12 +74,10 @@ namespace ft
 		};
 		
 		~vector(){
-			if (_p){
-				for (size_t i = 0; i<_size; i++)
-					_alloc.destroy(_p + i);
-				if (_capacity>0)
-					_alloc.deallocate(_p, _capacity);
-			}
+			clear();
+			if (_capacity>0)
+				_alloc.deallocate(_p, _capacity);
+			
 		};
 
 
@@ -276,9 +274,29 @@ namespace ft
 
 		iterator erase (iterator position)
 		{
+			if (position < this->begin() || position >= this->end())
+				throw std::out_of_range("Vector");
 			
+			unsigned long posInd = position - this->begin();
+			unsigned long posInd2 = posInd;
+			--_size;
+
+			while (posInd < _size)
+			{
+				_alloc.destroy(_p + posInd);
+				_p[posInd] = _p[posInd + 1];
+				++posInd;
+			};
+			_alloc.destroy(_p + posInd);
+			return (_p + posInd2);
 		}
-		// iterator erase (iterator first, iterator last);
+
+		iterator erase (iterator first, iterator last)
+		{
+			
+
+		}
+
 		void swap (vector& x)
 		{
 			vector<T, Alloc> tmp = x;

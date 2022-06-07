@@ -323,6 +323,7 @@ namespace ft
 			vector<T, Alloc> tmp = x;
 			x = *this;
 			*this = tmp;
+			// std::swap(*this, x);
 		}
 		void clear() {
 			

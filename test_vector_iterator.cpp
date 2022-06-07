@@ -147,16 +147,16 @@ int main()
 
 
 	/******************************************/
-	/*             erase check               */
+	/*             erase check                */
 	/******************************************/
 
 	std::cout<< SHALLOW << "erase check FT" <<std::endl;
 	ft::vector<int>::iterator begN = numVecFt.begin();
-	ft::vector<int>::iterator endN = numVecFt.end();
+	// ft::vector<int>::iterator endN = numVecFt.end();
 
 	std::cout<<YELLOW << "before erase ft numVecFt " << int (numVecFt.size()) <<", capacity " <<(numVecFt.capacity()) << '\n';
 	numVecFt.erase(begN);
-	numVecFt.erase(endN);
+	// numVecFt.erase(endN);
 	std::cout<<YELLOW << "after erase ft numVecFt " << int (numVecFt.size()) <<", capacity " <<(numVecFt.capacity()) << '\n';
 	for (ft::vector<int>::iterator b = numVecFt.begin(); b!=numVecFt.end();++b)
 		std::cout<<YELLOW<<*b<<std::endl;
@@ -164,14 +164,58 @@ int main()
 
 	std::cout<< SHALLOW << "erase check STD" <<std::endl;
 	std::vector<int>::iterator begNs = numVecStd.begin();
-	std::vector<int>::iterator endNs = numVecStd.end();
+	// std::vector<int>::iterator endNs = numVecStd.end();
 
-	std::cout<<YELLOW << "before erase STD numVecFt " << int (numVecStd.size()) <<", capacity " <<(numVecStd.capacity()) << '\n';
+	std::cout<<GREEN << "before erase STD numVecStd " << int (numVecStd.size()) <<", capacity " <<(numVecStd.capacity()) << '\n';
 	numVecStd.erase(begNs);
-	numVecStd.erase(endNs);
-	std::cout<<YELLOW << "after erase STD numVecFt " << int (numVecStd.size()) <<", capacity " <<(numVecStd.capacity()) << '\n';
+	// numVecStd.erase(endNs);
+	std::cout<<GREEN << "after erase STD numVecStd " << int (numVecStd.size()) <<", capacity " <<(numVecStd.capacity()) << '\n';
 	for (std::vector<int>::iterator b = numVecStd.begin(); b!=numVecStd.end();++b)
+		std::cout<<GREEN<<*b<<std::endl;
+
+	/******************************************/
+	/*             erase2 check               */
+	/******************************************/
+
+	std::cout<< SHALLOW << "erase check FT" <<std::endl;
+	std::cout<<YELLOW << "before erase ft numVecFt " << int (numVecFt.size()) <<", capacity " <<(numVecFt.capacity()) << '\n';
+	numVecFt.erase(numVecFt.begin(), numVecFt.begin()+2);
+
+	std::cout<<YELLOW << "after erase ft numVecFt " << int (numVecFt.size()) <<", capacity " <<(numVecFt.capacity()) << '\n';
+	for (ft::vector<int>::iterator b = numVecFt.begin(); b!=numVecFt.end();++b)
 		std::cout<<YELLOW<<*b<<std::endl;
+
+	std::cout<< SHALLOW << "erase check STD" <<std::endl;
+	std::cout<<GREEN << "before erase STD numVecStd " << int (numVecStd.size()) <<", capacity " <<(numVecStd.capacity()) << '\n';
+	numVecStd.erase(numVecStd.begin(), numVecStd.begin()+2);
+	// numVecStd.erase(endNs);
+	std::cout<<GREEN << "after erase STD numVecStd " << int (numVecStd.size()) <<", capacity " <<(numVecStd.capacity()) << '\n';
+	for (std::vector<int>::iterator b = numVecStd.begin(); b!=numVecStd.end();++b)
+		std::cout<<GREEN<<*b<<std::endl;
+
+	/********************************************/
+	/*             operator check               */
+	/********************************************/
+
+	ft::vector<int> foo1 (3,100);   // three ints with a value of 100
+	ft::vector<int> bar1 (2,200);
+	std::cout<< SHALLOW << " operator check FT" <<std::endl;
+	std::cout<< YELLOW << "foo1 (3,100) > bar1 (2,200) : " << (foo1 > bar1) <<std::endl;
+	std::cout<< YELLOW << "foo1 (3,100) >= bar1 (2,200) : " << (foo1 >= bar1) <<std::endl;
+	std::cout<< YELLOW << "foo1 (3,100) == bar1 (2,200) : " << (foo1 == bar1) <<std::endl;
+	std::cout<< YELLOW << "foo1 (3,100) =< bar1 (2,200) : " << (foo1 <= bar1) <<std::endl;
+	std::cout<< YELLOW << "foo1 (3,100) < bar1 (2,200) : " << (foo1 < bar1) <<std::endl;
+
+
+	std::cout<< SHALLOW << " operator check STD" <<std::endl;
+	std::vector<int> foo2 (3,100);   // three ints with a value of 100
+	std::vector<int> bar2 (2,200);
+	std::cout<< GREEN << "foo2 (3,100) > bar2 (2,200) : " << (foo2 > bar2) <<std::endl;
+	std::cout<< GREEN << "foo2 (3,100) >= bar2 (2,200) : " << (foo2 >= bar2) <<std::endl;
+	std::cout<< GREEN << "foo2 (3,100) == bar2 (2,200) : " << (foo2 == bar2) <<std::endl;
+	std::cout<< GREEN << "foo2 (3,100) =< bar2 (2,200) : " << (foo2 <= bar2) <<std::endl;
+	std::cout<< GREEN << "foo2 (3,100) < bar2 (2,200) : " << (foo2 < bar2) <<std::endl;
+
 
 	return (0);
 }

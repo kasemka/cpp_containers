@@ -90,7 +90,7 @@ namespace ft
 		void resize (size_type n, value_type val = value_type())
 		{
 			if (_capacity < n)
-				reserve(n);
+				reserve(_capacity*2);
 			for (; _size < n; _size++)
 				_alloc.construct(_p + _size, val);
 			for (; _size > n;)
@@ -288,13 +288,34 @@ namespace ft
 				++posInd;
 			};
 			_alloc.destroy(_p + posInd);
-			return (_p + posInd2);
+			return (_p + posInd2); //check later 
 		}
 
 		iterator erase (iterator first, iterator last)
 		{
+			if (first < this->begin() || first >= this->end() || last < this->begin() || last >= this->end())
+				throw std::out_of_range("Vector");
+
+			unsigned long indFirst = first - this->begin();
+			unsigned long indLast = last - this->begin();
+
+			// unsigned long posInd2 = posInd;
 			
 
+			while (indFirst < _size)
+			{
+				_alloc.destroy(_p + indFirst);
+				if (indLast < _size)
+				{
+					_p[indFirst] = _p[indLast];
+					++indLast;
+				}
+				++indFirst;
+			};
+			
+			_alloc.destroy(_p + indFirst);
+			_size = _size - (last -first);
+			return (_p + indFirst); //check later 
 		}
 
 		void swap (vector& x)
@@ -409,38 +430,46 @@ namespace ft
 	template <class TF, class AllocF>
 	bool operator== (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs)
 	{
-		return (lhs._p == rhs._p);
+		if (lhs.size() != rhs.size())
+			return false;
+		// return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+
+		int size = lhs.size();
+		for (int i = 0; i < size; ++i)
+		{
+			if (lhs[i] != rhs[i])
+				return false;
+		}
+		return true;
 	}
 	
 	template <class TF, class AllocF>
-	bool operator!= (const vector<TF, AllocF>& lhs, const vector<TF, AllocF>& rhs)
-	{
-		return (lhs._p != rhs._p);
+	bool operator != (const vector<TF, AllocF>& lhs, const vector<TF, AllocF>& rhs){ return !(lhs == rhs); }
+		
+	template <class TF, class AllocF>
+	bool operator < (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs){ 
+		int size = lhs.size();
+		if (size > rhs.size())
+			size = rhs.size();
+		for (int i = 0; i < size; ++i)
+		{
+			if (lhs[i] != rhs[i])
+				return lhs[i] < rhs[i];
+		}
+		if (lhs.size() < rhs.size())
+			return true;
+		return (false); 
+		
 	}
 		
 	template <class TF, class AllocF>
-	bool operator<  (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs)
-	{
-		return (lhs._p < rhs._p);
-	}
+	bool operator <= (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs){ return !(rhs < lhs); }
 		
 	template <class TF, class AllocF>
-	bool operator<= (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs)
-	{
-		return (lhs._p <= rhs._p);
-	}
+	bool operator > (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs){ return (rhs < lhs); }
 		
 	template <class TF, class AllocF>
-	bool operator>  (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs)
-	{
-		return (lhs._p > rhs._p);
-	}
-		
-	template <class TF, class AllocF>
-	bool operator>= (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs)
-	{
-		return (lhs._p >= rhs._p);
-	}
+	bool operator >= (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs){ return !(lhs < rhs); }
 
 	template <class TF, class AllocF>
 	void swap (vector<TF, AllocF>& x, vector<TF, AllocF>& y)

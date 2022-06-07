@@ -188,8 +188,10 @@ namespace ft
 
 		iterator insert (iterator position, const value_type& val)
 		{
+			int ind = position - this->begin();
 			insert(position, 1, val);
-			return (position);
+
+			return (this->begin + ind);
 		}
 
 		void insert (iterator position, size_type n, const value_type& val)
@@ -203,23 +205,25 @@ namespace ft
 			size_t		_oldsize = _size;
 	
 			_size += n; 
+	
 			if (_capacity < _size)
 			{
+				_capacity = _size * 2;
 				_p = _alloc.allocate(_capacity);
-				_capacity = _size;
 			}
 
-			// size_t i = 1;
 			int pIndex = _size - 1;
 			int oIndex = _oldsize - 1;
 
+
 			while (iterator(_oldp + oIndex) >= position)
 				_p[pIndex--] = _oldp[oIndex--];
+
 			
 			while (pIndex >= 0 || pIndex >= indexPos)
 				_p[pIndex--] = val;
 
-			// pause();
+
 			for (int i = 0; i < indexPos; ++i)
 				_p[i] = _oldp[i];
 
@@ -233,44 +237,13 @@ namespace ft
 
 		}
 
-		// template <class InIter>
-		// void insert (iterator position, InIter first, InIter last)
-		// {
-		// 	if (position < this->begin() || position >= this->end())
-		// 		return ;
-
-		// 	int indexPos = position - this->begin();
-		// 	int n = last - first;
+		template <class InIter>
+		void insert (iterator position, InIter first, InIter last, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type* = 0)
+		{
 			
-		// 	pointer		_oldp = _p;
-		// 	size_type	_oldcap = _capacity;
-		// 	size_t		_oldsize = _size;
-
-		// 	_size += n; 
-		// 	int indexEnd = indexPos + n - 1;
-		// 	if (_capacity < _size)
-		// 	{
-		// 		_p = _alloc.allocate(_capacity);
-		// 		_capacity = _size;
-		// 	}
-		// 	for (int i = _size - 1; i > indexEnd; --i)
-		// 		_p[i] = _oldp[i - 1];
-
-		// 	for (int i = indexEnd; i >= indexPos; --i)
-		// 		_p[i] =  val;
-		// 	--indexPos;
-		// 	for (int i = indexPos; i >= 0; --i)
-		// 		_p[i] = _oldp[i - 1];
-
-		// 	if (_oldcap < _capacity)
-		// 	{
-		// 		for (size_type i = 0; i < _oldsize; ++i)
-		// 			_alloc.destroy(_oldp + i);
-		// 		_alloc.deallocate(_oldp, _oldcap);
-		// 	}
 
 
-		// }
+		}
 
 		iterator erase (iterator position)
 		{
@@ -297,6 +270,7 @@ namespace ft
 				throw std::out_of_range("Vector");
 
 			unsigned long indFirst = first - this->begin();
+			unsigned long indFirstOld = indFirst;
 			unsigned long indLast = last - this->begin();
 
 			// unsigned long posInd2 = posInd;
@@ -315,7 +289,7 @@ namespace ft
 			
 			_alloc.destroy(_p + indFirst);
 			_size = _size - (last -first);
-			return (_p + indFirst); //check later 
+			return (_p + indFirstOld ); //check later 
 		}
 
 		void swap (vector& x)

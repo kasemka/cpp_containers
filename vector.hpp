@@ -25,8 +25,8 @@ namespace ft
 			typedef typename allocator_type::const_reference					const_reference;
 			typedef T*															pointer;
 			typedef const T*													const_pointer;
-			typedef iteratorVector<value_type*>									iterator;
-			typedef iteratorVector<const value_type*>							const_iterator;
+			typedef iteratorVector<T*>											iterator;
+			typedef iteratorVector<const T*>									const_iterator;
 			typedef ft::reverse_iterator<iterator>								reverse_iterator;
 			typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
 			
@@ -45,16 +45,17 @@ namespace ft
 			
 			
 			template <class InIter> 
-			vector (InIter first, InIter last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type =0) :_alloc(alloc), _p(0),  _size(0), _capacity(0)
+			vector (InIter first, InIter last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type* =0) :_alloc(alloc), _p(0),  _size(0), _capacity(0)
 			{
 				this->assign(first, last);
 			};
 		
-			vector (const vector& x)
-			{
-				*this = x;
-				// std::cout<<"vector copy constructor called"<<std::endl;
-				
+			vector (const vector& x): _capacity(x._capacity), _size(x._size){
+				_alloc = allocator_type();
+				_p = _alloc.allocate(_capacity);
+				for (size_type i = 0; i < _size; ++i)
+						_alloc.construct(_p + i, *(x._p + i));
+
 			};
 			
 			vector &operator=(const vector& x)
@@ -64,6 +65,9 @@ namespace ft
 				if (this != &x)
 				{
 					// _alloc = x._alloc;
+
+					clear();
+					_alloc.deallocate(_p, _capacity);
 					_size = x._size;
 					_capacity = x._capacity;
 					_p = _alloc.allocate(_capacity);
@@ -76,7 +80,7 @@ namespace ft
 			
 			~vector(){
 				clear();
-				if (_capacity>0)
+				// if (_capacity>0)
 					_alloc.deallocate(_p, _capacity);
 				
 			};
@@ -102,25 +106,21 @@ namespace ft
 			void reserve (size_type n)
 			{
 				
-				if (n > this->max_size() || n <= _capacity)
+				if (n > this->max_size())
+					throw (std::bad_alloc());
+				if (n <= _capacity)
 					return ;
 
-				pointer		_oldp = _p;
-				size_type	_oldcap = _capacity;
-
+				pointer _oldp = _p;
+				size_type _oldcap = _capacity;
 				_capacity = n;
 				_p = _alloc.allocate(_capacity);
 			
-				
-				if (_oldcap > 0){
-					for (size_type i = 0; i < _size; ++i)
-						_alloc.construct(_p + i, *(_oldp + i));
-					for (size_type i = 0; i < _size; ++i)
-						_alloc.destroy(_oldp + i);
-					_alloc.deallocate(_oldp, _oldcap);
-				}
-				
-				
+				for (size_type i = 0; i < _size; ++i)
+					_alloc.construct(_p + i, *(_oldp + i));
+				for (size_type i = 0; i < _size; ++i)
+					_alloc.destroy(_oldp + i);
+				_alloc.deallocate(_oldp, _oldcap);
 				
 			}
 		
@@ -134,7 +134,7 @@ namespace ft
 				// this->reserve(_size);
 				if (_capacity < _size)
 				{
-					if (_capacity > 0)
+					// if (_capacity > 0)
 						_alloc.deallocate(_p, _capacity);
 					_capacity = _size;
 					_p = _alloc.allocate(_capacity);
@@ -154,8 +154,7 @@ namespace ft
 				// reserve(_size);
 				if (_capacity < _size)
 				{
-					if (_capacity > 0)
-						_alloc.deallocate(_p, _capacity);
+					_alloc.deallocate(_p, _capacity);
 					_capacity = _size;
 					_p = _alloc.allocate(_capacity);
 				}
@@ -170,10 +169,10 @@ namespace ft
 
 				if (_size == _capacity)
 				{
-					if (_size == 0)
-						n = 1;
-					else 
+					if (_size > 0)
 						n = _capacity * 2;
+					else 
+						n = 1;
 					reserve(n);
 				}
 				_alloc.construct(_p + _size, val);

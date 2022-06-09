@@ -4,16 +4,14 @@
 #include <iostream>
 #include <memory>
 #include <iterator>
+#include "utils.hpp"
 
 
 namespace ft
 {
 	struct random_access_iterator_tag {};
 	// iterator traits
-	// iterator_traits<Iterator> will only have the nested types if Iterator::iterator_category
-	//    exists.  Else iterator_traits<Iterator> will be an empty class.  This is a
-	//    conforming extension which allows some programs to compile and behave as
-	//    the client expects instead of failing at compile time.
+	// iterator_traits<Iterator> will only have the nested types if Iterator::iterator_category exists.
 	template< class T >
 	struct iterator_traits
 	{
@@ -63,9 +61,14 @@ namespace ft
 			
 			iteratorVector():_elem(0){};
 			iteratorVector(typename iteratorVector::pointer const &vecPoint):_elem(vecPoint){};
-			iteratorVector(iteratorVector const &cp){ *this = cp;}; //add enable if ???
-			// template <class _Up>
-			// iteratorVector(const iteratorVector<_Up>& __u, typename std::enable_if<std::is_convertible<_Up, iterator_type>::value>::type* = 0): _elem(__u.base()){};
+
+			template <class _Up>
+			iteratorVector(const iteratorVector<_Up>& __u, typename std::enable_if<std::is_convertible<_Up, iterator_type>::value>::type* = 0): _elem(__u.base()){};
+
+			~iteratorVector() {};
+			// T base() const  { return _elem; }
+
+
 
 			iteratorVector &operator=(iteratorVector const &cp){
 				if (this != &cp)
@@ -74,7 +77,10 @@ namespace ft
 			};
 
 
-			iterator_type base() const {return _elem;}
+
+
+
+			// iterator_type base() const {return _elem;}
 			
 			typename iteratorVector::reference operator*(void) const { return (*_elem); };
 			typename iteratorVector::pointer operator->(void) const { return &(*_elem); };

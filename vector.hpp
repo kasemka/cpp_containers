@@ -60,12 +60,9 @@ namespace ft
 			
 			vector &operator=(const vector& x)
 			{
-			
-				//add iterator later
+
 				if (this != &x)
 				{
-					// _alloc = x._alloc;
-
 					clear();
 					_alloc.deallocate(_p, _capacity);
 					_size = x._size;
@@ -80,8 +77,7 @@ namespace ft
 			
 			~vector(){
 				clear();
-				// if (_capacity>0)
-					_alloc.deallocate(_p, _capacity);
+				_alloc.deallocate(_p, _capacity);
 				
 			};
 
@@ -103,21 +99,32 @@ namespace ft
 			}
 			size_type capacity() const { return _capacity; }
 			bool empty() const { return (_size > 0 ? false : true); }
+
 			void reserve (size_type n)
 			{
-				
+
 				if (n > this->max_size())
 					throw (std::bad_alloc());
 				if (n <= _capacity)
 					return ;
-
-				pointer _oldp = _p;
+					pointer _oldp = _p;
 				size_type _oldcap = _capacity;
 				_capacity = n;
 				_p = _alloc.allocate(_capacity);
-			
+				
 				for (size_type i = 0; i < _size; ++i)
-					_alloc.construct(_p + i, *(_oldp + i));
+				{
+					try
+					{
+						_alloc.construct(_p + i, *(_oldp + i));
+					}
+					catch (...)
+					{
+						std::cerr << "construct failed" << '\n';
+						_alloc.deallocate(_p, _capacity);
+						throw ;
+					}
+				}
 				for (size_type i = 0; i < _size; ++i)
 					_alloc.destroy(_oldp + i);
 				_alloc.deallocate(_oldp, _oldcap);
@@ -194,90 +201,58 @@ namespace ft
 				return (this->begin() + ind);
 			}
 
+		
+
 			void insert (iterator position, size_type n, const value_type& val)
 			{
 				if (position < this->begin() || position >= this->end())
 					return ;
 
-				int			indexPos = position - this->begin();	
-				pointer		_oldp = _p;
-				size_type	_oldcap = _capacity;
-				size_t		_oldsize = _size;
-		
-				_size += n; 
-		
-				if (_capacity < _size)
-				{
-					_capacity = _size * 2;
-					_p = _alloc.allocate(_capacity);
-				}
-
-				int pIndex = _size - 1;
-				int oIndex = _oldsize - 1;
-
-
-				while (iterator(_oldp + oIndex) >= position)
-					_p[pIndex--] = _oldp[oIndex--];
-
+				int		indexPos = position - this->begin();
+				int		indexOld = _size - 1;
+				int		indexNew = _size + n - 1;
 				
-				while (pIndex >= 0 || pIndex >= indexPos)
-					_p[pIndex--] = val;
+				if (_capacity * 2 < _size + n)
+					reserve(_size + n);
+				else if (_capacity < _size + n)
+					reserve(_capacity * 2);
 
-		
-				if (_oldcap < _capacity)
-				{
-					for (int i = 0; i < indexPos; ++i)
-						_p[i] = _oldp[i];
-
-					for (size_type i = 0; i < _oldsize; ++i)
-						_alloc.destroy(_oldp + i);
-					_alloc.deallocate(_oldp, _oldcap);
-				}
+				while (indexOld >= indexPos)
+					_p[indexNew--] = _p[indexOld--];
+				
+				while (indexNew >= 0 && indexNew >= indexPos)
+					_p[indexNew--] = val;
+				_size += n;
 			}
 
 			template <class InIter>
 			void insert (iterator position, InIter first, InIter last, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type* = 0)
 			{
-				if (position < this->begin() || position >= this->end())
+
+				int		indexPos = position - this->begin();
+				int		n = last - first;
+				
+				if (n <= 0)
 					return ;
 
-				int			indexPos = position - this->begin();
-				pointer		_oldp = _p;
-				size_type	_oldcap = _capacity;
-				size_t		_oldsize = _size;
+				int		indexOld = _size - 1;
+				int		indexNew = _size + n - 1;
+
+				if (_capacity * 2 < _size + n)
+					reserve(_size + n);
+				else if (_capacity < _size + n)
+					reserve(_capacity * 2);
+
+			
+				while (indexOld >= indexPos)
+					_p[indexNew--] = _p[indexOld--];
 				
-				int			n = last - first;
+				while (indexNew >= 0 && indexNew >= indexPos)
+					_p[indexNew--] = *--last;
+			
 
-				_size += n; 
+				_size += n;
 
-				if (_capacity < _size)
-				{
-					_capacity = _size * 2;
-					_p = _alloc.allocate(_capacity);
-				}
-
-				int pIndex = _size - 1;
-				int oIndex = _oldsize - 1;
-
-				while (iterator(_oldp + oIndex) >= position)
-					_p[pIndex--] = _oldp[oIndex--];
-
-				
-				while (pIndex >= 0 || pIndex >= indexPos)
-				{
-					_p[pIndex--] = *last;
-					last--;
-				}
-
-				if (_oldcap < _capacity)
-				{
-					for (int i = 0; i < indexPos; ++i)
-						_p[i] = _oldp[i];
-
-					for (size_type i = 0; i < _oldsize; ++i)
-						_alloc.destroy(_oldp + i);
-					_alloc.deallocate(_oldp, _oldcap);
-				}
 
 			}
 
@@ -309,8 +284,6 @@ namespace ft
 				unsigned long indFirstOld = indFirst;
 				unsigned long indLast = last - this->begin();
 
-				// unsigned long posInd2 = posInd;
-				
 
 				while (indFirst < _size)
 				{
@@ -325,7 +298,7 @@ namespace ft
 				
 				_alloc.destroy(_p + indFirst);
 				_size = _size - (last -first);
-				return (_p + indFirstOld ); //check later 
+				return (_p + indFirstOld ); 
 			}
 
 			void swap (vector& x)
@@ -335,6 +308,7 @@ namespace ft
 				*this = tmp;
 				// std::swap(*this, x);
 			}
+
 			void clear() {
 				
 				for (; _size > 0; --_size)
@@ -442,7 +416,6 @@ namespace ft
 	{
 		if (lhs.size() != rhs.size())
 			return false;
-		// return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 
 		int size = lhs.size();
 		for (int i = 0; i < size; ++i)
@@ -484,7 +457,6 @@ namespace ft
 	template <class TF, class AllocF>
 	void swap (vector<TF, AllocF>& x, vector<TF, AllocF>& y)
 	{
-		//add iterator later???
 		vector<TF, AllocF> tmp = x;
 		x = y;
 		y = tmp;

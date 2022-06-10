@@ -228,38 +228,51 @@ namespace ft
 			template <class InIter>
 			void insert (iterator position, InIter first, InIter last, typename ft::enable_if<!ft::is_integral<InIter>::value, InIter>::type* = 0)
 			{
-
 				int		indexPos = position - this->begin();
 				int		n = last - first;
+				
 				
 				if (n <= 0)
 					return ;
 
 				int		indexOld = _size - 1;
 				int		indexNew = _size + n - 1;
+				int		sizeNew = _size + n;
+				int		capNew = _capacity;
 
-				if (_capacity * 2 < _size + n)
-					reserve(_size + n);
-				else if (_capacity < _size + n)
-					reserve(_capacity * 2);
+				if (_capacity < sizeNew)
+				{					
+					pointer		_oldp = _p;
 
-			
+					if (_capacity * 2 < sizeNew)
+						capNew = sizeNew;
+					else if (_capacity < sizeNew)
+						capNew = _capacity * 2;
+					_p = _alloc.allocate(capNew);
+					for (size_type i = 0; i < _size; ++i)
+						_alloc.construct(_p + i, *(_oldp + i));
+					for (size_type i = 0; i < _size; ++i)
+						_alloc.destroy(_oldp + i);
+					_alloc.deallocate(_oldp, _capacity);
+
+				}
+
 				while (indexOld >= indexPos)
 					_p[indexNew--] = _p[indexOld--];
 				
 				while (indexNew >= 0 && indexNew >= indexPos)
 					_p[indexNew--] = *--last;
-			
 
+				
 				_size += n;
-
+				_capacity = capNew;
 
 			}
 
 			iterator erase (iterator position)
 			{
 				if (position < this->begin() || position >= this->end())
-					throw std::out_of_range("Vector");
+					throw std::out_of_range("");
 				
 				unsigned long posInd = position - this->begin();
 				unsigned long posInd2 = posInd;
@@ -324,8 +337,7 @@ namespace ft
 					return(_p[n]);
 				else 
 					throw std::invalid_argument("");
-				//intVector2.at(0): zsh: abort      ./a.out | 
-				// zsh: done       cat -e
+
 			}
 
 			const_reference at (size_type n) const {
@@ -335,18 +347,12 @@ namespace ft
 					throw std::invalid_argument("");
 			}
 			reference front(){
-				// if (_size > 0)
 				return _p[0];
-				
-				// else underfined behaviour 
-				//
+
 			}
-			const_reference front() const
-			{
-				// if (_size > 0)
+			const_reference front() const{
 				return _p[0];
-				// else underfined behaviour 
-				//
+
 			}
 			reference back(){
 				// if (_size > 0)

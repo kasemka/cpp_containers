@@ -103,3 +103,25 @@ int main()
 
 если в дочке нет переменной abc, а в родителе есть, то чтобы распечатать обязательно нужно вызывать через this->abc
 так как в дочке нет abc.
+
+try - catch для alloc.allocate() можно не делать, так как он сам кидает bad alloc.
+после throw полед код не исполнится.
+
+SIGSEGV is abbreviation for “Signal Segmentation Violation” (usually signal 11)). 
+-> Using uninitialized pointer 
+-> De-referencing a NULL pointer 
+-> Trying to access memory that the program doesn’t own (eg. trying to access an array element 
+out of array bounds). 
+-> Trying to access memory which is already de-allocated (trying to use dangling pointers). 
+Please refer this article for examples.
+
+
+ Bus Error (usually signal 10) occur when a process
+ is trying to access memory that the CPU cannot physically address
+
+Основное различие между ошибкой сегментации и ошибкой шины заключается в том, 
+что ошибка сегментации указывает на недопустимый доступ к действительной памяти, 
+а ошибка шины указывает на доступ к недопустимому адресу.
+
+
+

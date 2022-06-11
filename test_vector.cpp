@@ -7,35 +7,7 @@
 #define YELLOW "\033[0;33m"
 #define RED "\033[1;31m"
 #define SHALLOW "\033[0m"
-// #if 1
-// 	namespace ft = std;
-// #endif
 
-// class A 
-// {
-// 	public:
-// 		int _a;
-// 		A(){ std::cout << "constructor called" << std::endl; };
-// 		~A() { std::cout << "destructor called" << std::endl;};
-// 		A(int a):_a(a){}
-		
-
-// };
-
-
-// int main()
-// {
-// 	{
-// 		std::cout << std::endl;
-// 		ft::vector<A> v(5);
-// 		std::cout << std::endl;
-
-// 		// std::cout << std::endl;
-// 		// std::vector<A> v1(5);
-// 		// std::cout << std::endl;
-
-// 	}
-// }
 
 template < class T >
 void print_all(T & my)
@@ -277,46 +249,46 @@ int main()
 	// }
 
 
-	ft::vector<int> myVec1;
-	std::vector<int> vec1;
+	// ft::vector<int> myVec1;
+	// std::vector<int> vec1;
 
-	for (int i = 0; i< 9; ++i)
-	{
-		myVec1.push_back(i);
-		vec1.push_back(i);
-	}
+	// for (int i = 0; i< 9; ++i)
+	// {
+	// 	myVec1.push_back(i);
+	// 	vec1.push_back(i);
+	// }
 
-	ft::vector<int> myVec2;
-	std::vector<int> vec2;
+	// ft::vector<int> myVec2;
+	// std::vector<int> vec2;
 
-	std::cout<<"size of std myVec1 before swap: "<<myVec1.size()<<std::endl;
-	std::cout<<"size of std vec1 before swap: "<<vec1.size()<<std::endl;
+	// std::cout<<"size of std myVec1 before swap: "<<myVec1.size()<<std::endl;
+	// std::cout<<"size of std vec1 before swap: "<<vec1.size()<<std::endl;
 
-	std::cout<<"capacity of std myVec1 before swap: "<<myVec1.capacity()<<std::endl;
-	std::cout<<"capacity of std vec1 before swap: "<<vec1.capacity()<<std::endl;
+	// std::cout<<"capacity of std myVec1 before swap: "<<myVec1.capacity()<<std::endl;
+	// std::cout<<"capacity of std vec1 before swap: "<<vec1.capacity()<<std::endl;
 
-	std::cout<<"size of std myVec2 before swap: "<<myVec2.size()<<std::endl;
-	std::cout<<"size of std vec2 before swap: "<<vec2.size()<<std::endl;
+	// std::cout<<"size of std myVec2 before swap: "<<myVec2.size()<<std::endl;
+	// std::cout<<"size of std vec2 before swap: "<<vec2.size()<<std::endl;
 	
-	std::cout<<"capacity of std myVec2 before swap: "<<myVec2.capacity()<<std::endl;
-	std::cout<<"capacity of std vec2 before swap: "<<vec2.capacity()<<std::endl;
+	// std::cout<<"capacity of std myVec2 before swap: "<<myVec2.capacity()<<std::endl;
+	// std::cout<<"capacity of std vec2 before swap: "<<vec2.capacity()<<std::endl;
 
 	// ft::swap(myVec1, myVec2);
 	// std::swap(vec1, vec2);
-	myVec1.swap(myVec2);
-	vec1.swap(vec2);
+	// myVec1.swap(myVec2);
+	// vec1.swap(vec2);
 
-	std::cout<<"size of std myVec1 before swap: "<<myVec1.size()<<std::endl;
-	std::cout<<"size of std vec1 before swap: "<<vec1.size()<<std::endl;
+	// std::cout<<"size of std myVec1 before swap: "<<myVec1.size()<<std::endl;
+	// std::cout<<"size of std vec1 before swap: "<<vec1.size()<<std::endl;
 
-	std::cout<<"capacity of std myVec1 before swap: "<<myVec1.capacity()<<std::endl;
-	std::cout<<"capacity of std vec1 before swap: "<<vec1.capacity()<<std::endl;
+	// std::cout<<"capacity of std myVec1 before swap: "<<myVec1.capacity()<<std::endl;
+	// std::cout<<"capacity of std vec1 before swap: "<<vec1.capacity()<<std::endl;
 
-	std::cout<<"size of std myVec2 before swap: "<<myVec2.size()<<std::endl;
-	std::cout<<"size of std vec2 before swap: "<<vec2.size()<<std::endl;
+	// std::cout<<"size of std myVec2 before swap: "<<myVec2.size()<<std::endl;
+	// std::cout<<"size of std vec2 before swap: "<<vec2.size()<<std::endl;
 	
-	std::cout<<"capacity of std myVec2 before swap: "<<myVec2.capacity()<<std::endl;
-	std::cout<<"capacity of std vec2 before swap: "<<vec2.capacity()<<std::endl;
+	// std::cout<<"capacity of std myVec2 before swap: "<<myVec2.capacity()<<std::endl;
+	// std::cout<<"capacity of std vec2 before swap: "<<vec2.capacity()<<std::endl;
 	
 
 

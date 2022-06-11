@@ -7,3 +7,4 @@ a.out
 ft_containers-unit-test
 a.out.dSYM/Contents
 containers.dSYM/Contents
+*.cpp

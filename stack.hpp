@@ -1,13 +1,10 @@
 #ifndef STACK_HPP
 #define STACK_HPP
-#include <vector>
-#include <iostream>
-#include <queue>
-// #include <stack>
+#include "vector.hpp"
 
 namespace ft
 {
-	template<typename T, typename Container = std::vector<T> >
+	template<typename T, typename Container = vector<T> >
 	class stack
 	{
 		public:
@@ -16,9 +13,8 @@ namespace ft
 		typedef Container 							container_type;
 
 		private:
-		std::vector<T>	_c;
+		vector<T>	_c;
 
-			
 		public:
 		
 		explicit stack (const container_type& ctnr = container_type()): _c(ctnr){}; //создание нового объекта референса  = вызов конструктора, если аргумент пустой

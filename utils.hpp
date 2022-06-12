@@ -1,12 +1,11 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
+#include <memory> 
 
 namespace ft
 {
-	// is_integral<char>::value  == true
-	// is_integral<char>::value  == false
-
+	// integral_constant
 	template <class T, bool v>
 	struct integral_constant 
 	{
@@ -21,11 +20,13 @@ namespace ft
 	typedef ft::integral_constant<bool,true>	true_type;
 	typedef ft::integral_constant<bool,false>	false_type;
 
+
+	// is_integral
 	template <class> struct is_integral							: public false_type {};	//primary template
 	template <> struct is_integral <bool>						: public true_type {};	//explicit template specialization
 	template <> struct is_integral <char>						: public true_type {};
-	// template <> struct is_integral <char16_t>					: public true_type {};
-	// template <> struct is_integral <char32_t>					: public true_type {};
+	template <> struct is_integral <char16_t>					: public true_type {};
+	template <> struct is_integral <char32_t>					: public true_type {};
 	template <> struct is_integral <wchar_t>					: public true_type {};
 	template <> struct is_integral <signed char>				: public true_type {};
 	template <> struct is_integral <short int>					: public true_type {};
@@ -38,11 +39,12 @@ namespace ft
 	template <> struct is_integral <unsigned long int>			: public true_type {};
 	template <> struct is_integral <unsigned long long int>		: public true_type {};
 
-
+	// enable_if
 	template<bool Cond, class T = void> struct enable_if {}; 			//primary template
 	template<class T> struct enable_if<true, T> { typedef T type; }; 	//explicit template specialization
 
 
+	// equal
 	template <class InputIterator1, class InputIterator2>
 	bool equal ( InputIterator1 first1, InputIterator1 last1, InputIterator2 first2 )
 	{
@@ -66,10 +68,62 @@ namespace ft
 		return true;
 	};
 
-	template <class T1, class T2> struct pair
-	{
 
+	// pair
+	template <class first_type, class second_type> 
+	struct pair
+	{
+		first_type first;
+		second_type second;
+
+		pair():first(0), second(0){};
+
+		template<class U, class V> 
+			pair (const pair<U,V>& pr){ *this = pr;};
+		pair (const first_type& a, const second_type& b):first(a), second(b){};
+
+		pair& operator= (const pair& pr){
+			if (this != &pr){
+				first = pr.first;
+				second = pr.second;
+			}
+			return *this;
+		}
 	};
+
+	template <class T1, class T2>
+	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+	{ return lhs.first==rhs.first && lhs.second==rhs.second; }
+
+	template <class T1, class T2>
+	bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+	{ return !(lhs==rhs); }
+
+	template <class T1, class T2>
+	bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+	{ return lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second); }
+
+	template <class T1, class T2>
+	bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+	{ return !(rhs<lhs); }
+
+	template <class T1, class T2>
+	bool operator>  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+	{ return rhs<lhs; }
+
+	template <class T1, class T2>
+	bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+	{ return !(lhs<rhs); }
+
+
+	// make pair
+	template <class T1, class T2>
+	pair<T1,T2> 
+	make_pair (T1 x, T2 y) { 
+		return (pair<T1,T2>(x,y) );
+	}
+
+
 
 }
 

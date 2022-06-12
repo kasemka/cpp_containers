@@ -1,17 +1,14 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
-#include <string>
+// #include <string>
 #include <memory>
-// #include <vector>
 #include <iostream>
-#include <unistd.h>
+// #include <unistd.h>
 #include "iterator.hpp"
 #include "utils.hpp"
-#include <algorithm>
+// #include <algorithm>
 
-
-// class Iterator
 
 namespace ft
 {
@@ -55,7 +52,6 @@ namespace ft
 				_p = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < _size; ++i)
 						_alloc.construct(_p + i, *(x._p + i));
-
 			};
 			
 			vector &operator=(const vector& x)
@@ -158,7 +154,6 @@ namespace ft
 				clear();
 				_size = n;
 
-				// reserve(_size);
 				if (_capacity < _size)
 				{
 					_alloc.deallocate(_p, _capacity);
@@ -184,7 +179,6 @@ namespace ft
 				}
 				_alloc.construct(_p + _size, val);
 				++_size;
-				
 			}
 			
 			void pop_back()

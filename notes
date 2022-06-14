@@ -134,3 +134,20 @@ collection of unique keys, sorted by keys
 map 
 collection of key-value pairs, sorted by keys, keys are unique
 (class template)
+
+A graph is a type of non-linear data structure 
+that is used to store data in the form of nodes and edges
+
+Red-black tree. 
+
+strategy of insertion to red-black tree:
+1. insert Z
+2. recolor and rotate nodes to fix violation
+
+1. if Z is root - then color it to black
+2. if Z has red uncle, recolor it is parent, uncle and grand parent
+3. if Z has black uncle (triangle), rotate Z and it parent (change them <->)
+4. if Z has black uncle (line),
+rotate Z parent and grandparent (change them <->),
+brother of Z is now right kid of ex-grandparent
+

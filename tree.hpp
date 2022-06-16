@@ -33,16 +33,19 @@ namespace ft
 			typedef _Allocator 			allocator_type;
 
 		private:
-			_Allocator _alloc;
+			_Allocator								_alloc;
+			_Compare								_compare;
+			// typename allocator_type::pointer		_begin_node;
+			// typename allocator_type::pointer		_end_node;
+			node<value_type>* _begin_node;
+			node<value_type>* _end_node;
 
-
-			node *_begin_node;
-			node *_end_node;
-
-			tree():_alloc(){
-				_alloc.construct();
+		public:
+			tree(){
+				_begin_node = _alloc.allocate(0);
 			};
-			~tree(){};
+			
+			// ~tree(){};
 	
 	};
 	 

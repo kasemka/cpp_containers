@@ -31,20 +31,23 @@ namespace ft
 
 		public:
 			// types:
-			typedef Key																	key_type;
-			typedef T																	mapped_type;
-			typedef pair<const key_type, mapped_type>									value_type;
-			typedef Compare																key_compare;
-			typedef typename allocator_type::reference									reference;
-			typedef typename allocator_type::const_reference							const_reference;
-			typedef typename allocator_type::pointer									pointer;
-			typedef typename allocator_type::const_pointer								const_pointer;
-			typedef typename allocator_type::size_type									size_type;
-			typedef typename allocator_type::difference_type							difference_type;
+			typedef Key															key_type;
+			typedef T															mapped_type;
+			typedef pair<const key_type, mapped_type>							value_type;
+			typedef Compare														key_compare;
+			typedef Allocator													allocator_type;
+			typedef typename Allocator::reference								reference;
+			typedef typename Allocator::const_reference							const_reference;
+			typedef typename Allocator::pointer									pointer;
+			typedef typename Allocator::const_pointer							const_pointer;
+			typedef typename Allocator::size_type								size_type;
+			typedef typename Allocator::difference_type							difference_type;
 
 		private:
-			typedef typename Allocator::template rebind< Node<value_type> >::other		_allocator_type;
-			ft::tree<value_type, key_compare, _allocator_type> __tree;
+			Compare __comp;
+			Allocator __alloc;
+			typedef typename Allocator::template rebind< node<value_type> >::other		allocatorNode;
+			ft::tree<value_type, key_compare, allocatorNode> __tree;
 
 		public:
 			class value_compare : std::binary_function<value_type, value_type, bool>
@@ -60,33 +63,8 @@ namespace ft
 					}
 			};
 
-
-
-			// typedef tree<>										_base;
-
-			// typedef implementation-defined 						iterator;
-			// typedef implementation-defined 						const_iterator;
-			// typedef std::reverse_iterator<iterator>				reverse_iterator;
-			// typedef std::reverse_iterator<const_iterator> 		const_reverse_iterator;
-
-
-			// class value_compare : public binary_function<value_type, value_type, bool>
-			// {
-			// 	friend class map;
-
-			// 	protected:
-			// 		key_compare comp;
-			// 		value_compare(key_compare c);
-
-			// 	public:
-			// 		bool operator()(const value_type& x, const value_type& y) const
-			// 			{return comp(__x.first, __y.first);}
-			// };
-
 			// construct:
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()){
-
-			};
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):__comp(comp), __alloc(alloc), __tree(){};
 
 			// template <class InputIterator>
 			// 	map (InputIterator first, InputIterator last, 
@@ -102,7 +80,7 @@ namespace ft
 
 			
 			
-			~map();
+			~map(){};
 
 			// map& operator=(const map& m);
 			// map& operator=(map&& m)
@@ -224,10 +202,7 @@ namespace ft
 		operator<=(const map<Key, T, Compare, Allocator>& x,
 				const map<Key, T, Compare, Allocator>& y);
 
-		// specialized algorithms:
-		template <class Key, class T, class Compare, class Allocator>
-		void swap(map<Key, T, Compare, Allocator>& x, map<Key, T, Compare, Allocator>& y)
-			noexcept(noexcept(x.swap(y)));
+
 
 }
 

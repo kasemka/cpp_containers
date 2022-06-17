@@ -15,9 +15,9 @@ namespace ft
 	// template <class _Tp>
 	// struct less 
 	// {
-	// 	bool operator()(const _Tp& __x, const _Tp& __y) const 
+	// 	bool operator()(const _Tp& _x, const _Tp& _y) const 
 	// 	{
-	// 		return __x < __y;
+	// 		return _x < _y;
 	// 	} 
 	// };
 
@@ -31,23 +31,26 @@ namespace ft
 
 		public:
 			// types:
-			typedef Key															key_type;
-			typedef T															mapped_type;
-			typedef pair<const key_type, mapped_type>							value_type;
-			typedef Compare														key_compare;
-			typedef Allocator													allocator_type;
-			typedef typename Allocator::reference								reference;
-			typedef typename Allocator::const_reference							const_reference;
-			typedef typename Allocator::pointer									pointer;
-			typedef typename Allocator::const_pointer							const_pointer;
-			typedef typename Allocator::size_type								size_type;
-			typedef typename Allocator::difference_type							difference_type;
+			typedef Key																	key_type;
+			typedef T																	mapped_type;
+			typedef ft::pair<const key_type, mapped_type>								value_type;
+			typedef Compare																key_compare;
+			typedef Allocator															allocator_type;
+			typedef typename Allocator::reference										reference;
+			typedef typename Allocator::const_reference									const_reference;
+			typedef typename Allocator::pointer											pointer;
+			typedef typename Allocator::const_pointer									const_pointer;
+			typedef typename Allocator::size_type										size_type;
+			typedef typename Allocator::difference_type									difference_type;
+			typedef typename ft::mapIterator<node<value_type>*, value_type>				iterator;
+			// typedef typename ft::mapIterator<const node<value_type>*, value_type>		const_iterator;
 
 		private:
-			Compare __comp;
-			Allocator __alloc;
+			Compare _comp;
+			Allocator _alloc;
 			typedef typename Allocator::template rebind< node<value_type> >::other		allocatorNode;
-			ft::tree<value_type, key_compare, allocatorNode> __tree;
+			
+			ft::tree<value_type, key_compare, allocatorNode> _tree;
 
 		public:
 			class value_compare : std::binary_function<value_type, value_type, bool>
@@ -64,112 +67,41 @@ namespace ft
 			};
 
 			// construct:
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):__comp(comp), __alloc(alloc), __tree(){};
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):
+				_comp(comp), _alloc(alloc), _tree(ft::tree<value_type, key_compare, allocatorNode>()){};
+		
 
 			// template <class InputIterator>
-			// 	map (InputIterator first, InputIterator last, 
-			// 	const key_compare& comp = key_compare(),
+			// 	map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
 			// 	const allocator_type& alloc = allocator_type())
 			// {
 				
 			// };
-			map (const map& x){
+			// map (const map& x){
+				
+				
+			// };
 
-			};
-
-
-			
-			
+		
 			~map(){};
 
-			// map& operator=(const map& m);
-			// map& operator=(map&& m)
-			// 	noexcept(
-			// 		allocator_type::propagate_on_container_move_assignment::value &&
-			// 		is_nothrow_move_assignable<allocator_type>::value &&
-			// 		is_nothrow_move_assignable<key_compare>::value);
-			// map& operator=(initializer_list<value_type> il);
-// 
+	
 			// // iterators:
-			// 	iterator begin() noexcept;
-			// const_iterator begin() const noexcept;
-			// 	iterator end() noexcept;
-			// const_iterator end()   const noexcept;
+			iterator begin(){return _tree.begin();};
+		
+			ft::pair<iterator,bool> insert(const value_type& v)
+			{
+				return (_tree.insertNode(v));
 
-			// 	reverse_iterator rbegin() noexcept;
-			// const_reverse_iterator rbegin() const noexcept;
-			// 	reverse_iterator rend() noexcept;
-			// const_reverse_iterator rend()   const noexcept;
+			}
+			
 
-			// const_iterator         cbegin()  const noexcept;
-			// const_iterator         cend()    const noexcept;
-			// const_reverse_iterator crbegin() const noexcept;
-			// const_reverse_iterator crend()   const noexcept;
+			//remove it later
+			void printTree()
+			{
+				_tree.printTree();
+			}
 
-			// // capacity:
-			// bool      empty()    const noexcept;
-			// size_type size()     const noexcept;
-			// size_type max_size() const noexcept;
-
-			// // element access:
-			// mapped_type& operator[](const key_type& k);
-			// mapped_type& operator[](key_type&& k);
-
-			// 	mapped_type& at(const key_type& k);
-			// const mapped_type& at(const key_type& k) const;
-
-			// // modifiers:
-			// template <class... Args>
-			// 	pair<iterator, bool> emplace(Args&&... args);
-			// template <class... Args>
-			// 	iterator emplace_hint(const_iterator position, Args&&... args);
-			// pair<iterator, bool> insert(const value_type& v);
-
-			// template <class P>
-			// pair<iterator, bool> insert(P&& p);
-
-			// iterator insert(const_iterator position, const value_type& v);
-
-			// template <class P>
-			// 	iterator insert(const_iterator position, P&& p);
-			// template <class InputIterator>
-			// 	void insert(InputIterator first, InputIterator last);
-			// void insert(initializer_list<value_type> il);
-
-
-
-
-			// iterator  erase(const_iterator position);
-
-			// size_type erase(const key_type& k);
-			// iterator  erase(const_iterator first, const_iterator last);
-
-			// void clear() noexcept;
-
-
-
-			// // observers:
-			// allocator_type get_allocator() const noexcept;
-			// key_compare    key_comp()      const;
-			// value_compare  value_comp()    const;
-
-			// // map operations:
-			// 	iterator find(const key_type& k);
-			// const_iterator find(const key_type& k) const;
-
-
-			// size_type      count(const key_type& k) const;
-			// 	iterator lower_bound(const key_type& k);
-			// const_iterator lower_bound(const key_type& k) const;
-
-
-			// 	iterator upper_bound(const key_type& k);
-			// const_iterator upper_bound(const key_type& k) const;
-
-
-			// pair<iterator,iterator>             equal_range(const key_type& k);
-			// pair<const_iterator,const_iterator> equal_range(const key_type& k) const;
-				
 		};
 
 		template <class Key, class T, class Compare, class Allocator>

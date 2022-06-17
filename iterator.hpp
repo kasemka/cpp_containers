@@ -3,13 +3,15 @@
 
 #include <iostream>
 #include <memory>
-#include <iterator>
+// #include <iterator>
 #include "utils.hpp"
 
 
 namespace ft
 {
 	struct random_access_iterator_tag {};
+	struct bidirectional_iterator_tag {};
+
 	// iterator traits
 	// iterator_traits<Iterator> will only have the nested types if Iterator::iterator_category exists.
 	template< class T >
@@ -162,6 +164,56 @@ namespace ft
 	};
 
 
+
+	template< class T, class U>
+	struct mapIterator
+	{	
+		public:
+			typedef T							iterator_type;
+			typedef U 							value_type;
+			typedef U& 							reference;
+			typedef U* 							pointer;
+			typedef const U& 					const_reference;
+			typedef const U* 					const_pointer;
+			typedef bidirectional_iterator_tag	iterator_category;
+			typedef ptrdiff_t					difference_type;
+
+
+		private:
+			T __iter;
+
+		public:
+			mapIterator(T iter = nullptr): __iter(iter) {};
+			~mapIterator(){};
+
+			reference operator*() const {return *(__iter->key);}
+			pointer operator->() const {return __iter->key;}
+
+			mapIterator& operator++() {++__iter; return *this;};
+			mapIterator operator++(int){ 
+				mapIterator tem(*this);
+				++(*this);
+				return tem;
+			}	
+			mapIterator& operator--() {--__iter; return *this;};
+			mapIterator operator--(int){
+				mapIterator tem(*this);
+				--(*this);
+				return tem;
+			}
+			friend
+			bool operator==(const mapIterator& x, const mapIterator& y)
+			{return x.__iter == y.__iter;};
+
+			friend
+			bool operator!=(const mapIterator& x, const mapIterator& y)
+			{return x.__iter != y.__iter;};
+
+
+
+
+
+	};
 
 }
 

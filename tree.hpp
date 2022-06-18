@@ -174,35 +174,27 @@ namespace ft
 
 
 
-			void printTree(const std::string& prefix, const BSTNode* node, bool isLeft)
+			void printBT(const std::string& prefix, const node<value_type>* nodeV, bool isLeft)
 			{
-				
-					
-					// std::cout <<"root : "<< _root->color << "  "<< _root->key.first <<std::endl;
-					// std::cout <<"_root->left: "<< _root->left->color<< "  "<< _root->left->key.first << std::endl;
-					// std::cout <<"_root->right: "<< _root->right->color<< "  "<< _root->right->key.first << std::endl;
-					// std::cout <<"_root->left->left: "<< _root->left->left->color<< "  "<< _root->left->left->key.first << std::endl;
-					// std::cout <<"_root->left->right: "<< _root->left->right->color<<"  "<< _root->left->right->key.first << std::endl;
-
-					std::string prefix("");
-					bool isLeft = false;
-
 					std::cout << prefix;
 
 					std::cout << (isLeft ? "├──" : "└──" );
-
+					
+					if (nodeV == _nil){
+						std::cout << "nil" << std::endl; 
+						return ;
+					}
 					// print the value of the node
-					std::cout << _root->key.first << std::endl;
-
-					// enter the next tree level - left and right branch
-					printBT( prefix + (isLeft ? "│   " : "    "), _root->left, true);
-					printBT( prefix + (isLeft ? "│   " : "    "), _root->right, false);
+					std::cout << nodeV->key.first << std::endl;
+					printBT( prefix + (isLeft ? "│   " : "    "), nodeV->left, true);
+					printBT( prefix + (isLeft ? "│   " : "    "), nodeV->right, false);
 
 				
 				
 			}
-
-			
+			void printBT(){
+				printBT("", _root, false);
+			}
 	
 	};
 	 

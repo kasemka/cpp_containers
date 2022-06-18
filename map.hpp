@@ -104,7 +104,7 @@ namespace ft
 			//remove it later
 			void printTree()
 			{
-				_tree.printTree();
+				_tree.printBT();
 				
 			}
 

@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <memory>
-// #include <iterator>
+#include "tree.hpp"
 #include "utils.hpp"
 
 
@@ -180,35 +180,36 @@ namespace ft
 
 
 		private:
-			T __iter;
+			T _iter;
 
 		public:
-			mapIterator(T iter = nullptr): __iter(iter) {};
+			mapIterator(T val = nullptr) : _iter(val){};
+			
 			~mapIterator(){};
 
-			reference operator*() const {return *(__iter->key);}
-			pointer operator->() const {return __iter->key;}
+			reference operator*() const {return *(_iter->key);}
+			pointer operator->() const {return _iter->key;}
 
-			mapIterator& operator++() {++__iter; return *this;};
+			mapIterator& operator++() {++_iter; return *this;};
 			mapIterator operator++(int){ 
 				mapIterator tem(*this);
 				++(*this);
 				return tem;
 			}	
-			mapIterator& operator--() {--__iter; return *this;};
+			mapIterator& operator--() {--_iter; return *this;};
 			mapIterator operator--(int){
 				mapIterator tem(*this);
 				--(*this);
 				return tem;
 			}
-			
+
 			friend
 			bool operator==(const mapIterator& x, const mapIterator& y)
-			{return x.__iter == y.__iter;};
+			{return x._iter == y._iter;};
 
 			friend
 			bool operator!=(const mapIterator& x, const mapIterator& y)
-			{return x.__iter != y.__iter;};
+			{return x._iter != y._iter;};
 
 
 

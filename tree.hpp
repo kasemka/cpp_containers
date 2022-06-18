@@ -59,8 +59,21 @@ namespace ft
 			
 			~tree(){};
 
-			node<value_type>* begin(){return _nil;};
+			node<value_type>* begin(void){
+				node<value_type>* tmp = _root;
+				while (tmp != _nil)
+					tmp = tmp->left;
+				return (tmp->parent);
+			}
 
+			node<value_type>* end(void){
+				node<value_type>* tmp = _root;
+				while (tmp != _nil)
+					tmp = tmp->right;
+				return (tmp->parent);
+			}
+			
+			
 			ft::pair<node<value_type>*, bool> insertNode(const value_type& val)
 			{
 				node<value_type>* x = _root;

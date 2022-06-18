@@ -87,8 +87,13 @@ namespace ft
 
 	
 			// // iterators:
-			iterator begin(){return _tree.begin();};
-		
+			iterator begin(){
+				return iterator(_tree.begin());
+			};
+			
+			iterator end(){
+				return iterator(_tree.begin());
+			};
 			ft::pair<iterator,bool> insert(const value_type& v)
 			{
 				return (_tree.insertNode(v));

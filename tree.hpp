@@ -4,6 +4,7 @@
 #include <memory>
 #include "utils.hpp"
 
+
 #define BLACK 0
 #define RED 1
 
@@ -39,7 +40,7 @@ namespace ft
 			typedef _Tp 				value_type;
 			typedef _Compare 			value_compare;
 			typedef _Allocator 			allocator_type;
-
+			
 			
 
 		private:
@@ -100,6 +101,7 @@ namespace ft
 				newNode->left = newNode->right = _nil;
 				// newNode->color = RED;
 				insertFixup(newNode);
+				++_size;
 				return (ft::make_pair(newNode, true));
 
 			}
@@ -172,19 +174,31 @@ namespace ft
 
 
 
-			void printTree()
+			void printTree(const std::string& prefix, const BSTNode* node, bool isLeft)
 			{
-				// int i = 0;
-				// while (i< _size)
-				// {
+				
 					
-					std::cout <<"root : "<< _root->color << "  "<< _root->key.first <<std::endl;
-					std::cout <<"_root->left: "<< _root->left->color<< "  "<< _root->left->key.first << std::endl;
-					std::cout <<"_root->right: "<< _root->right->color<< "  "<< _root->right->key.first << std::endl;
-					std::cout <<"_root->left->left: "<< _root->left->left->color<< "  "<< _root->left->left->key.first << std::endl;
-					std::cout <<"_root->left->right: "<< _root->left->right->color<<"  "<< _root->left->right->key.first << std::endl;
+					// std::cout <<"root : "<< _root->color << "  "<< _root->key.first <<std::endl;
+					// std::cout <<"_root->left: "<< _root->left->color<< "  "<< _root->left->key.first << std::endl;
+					// std::cout <<"_root->right: "<< _root->right->color<< "  "<< _root->right->key.first << std::endl;
+					// std::cout <<"_root->left->left: "<< _root->left->left->color<< "  "<< _root->left->left->key.first << std::endl;
+					// std::cout <<"_root->left->right: "<< _root->left->right->color<<"  "<< _root->left->right->key.first << std::endl;
 
-				// }
+					std::string prefix("");
+					bool isLeft = false;
+
+					std::cout << prefix;
+
+					std::cout << (isLeft ? "├──" : "└──" );
+
+					// print the value of the node
+					std::cout << _root->key.first << std::endl;
+
+					// enter the next tree level - left and right branch
+					printBT( prefix + (isLeft ? "│   " : "    "), _root->left, true);
+					printBT( prefix + (isLeft ? "│   " : "    "), _root->right, false);
+
+				
 				
 			}
 

@@ -92,7 +92,7 @@ namespace ft
 			};
 			
 			iterator end(){
-				return iterator(_tree.begin());
+				return iterator(_tree.end());
 			};
 			ft::pair<iterator,bool> insert(const value_type& v)
 			{
@@ -105,6 +105,7 @@ namespace ft
 			void printTree()
 			{
 				_tree.printTree();
+				
 			}
 
 		};

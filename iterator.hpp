@@ -187,8 +187,8 @@ namespace ft
 			
 			~mapIterator(){};
 
-			reference operator*() const {return *(_iter->key);}
-			pointer operator->() const {return _iter->key;}
+			reference operator*() const {return _iter->key;}
+			pointer operator->() const {return &(_iter->key);}
 
 			mapIterator& operator++() {++_iter; return *this;};
 			mapIterator operator++(int){ 

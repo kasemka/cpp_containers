@@ -24,7 +24,7 @@ namespace ft
 		struct node* right;
 
 		T key;
-		node():color(BLACK), isNill(1), parent(this), left(this), right(this){}; //for nil
+		node():color(BLACK), isNill(1),parent(this), left(this), right(this){}; //for nil
 		node(T pair):color(RED), isNill(0), parent(this), left(0), right(0), key(pair){};
 		node(const node &other): 
 		color(other.color), isNill(other.isNill), parent(other.parent), left(other.left), right(other.right), key(other.key) {};
@@ -93,13 +93,14 @@ namespace ft
 				newNode->parent = y;
 				if (y == _nil){
 					_root = newNode;
+					_root->parent = _nil; //different from algor
 					_nil->left = _root;} // !!!! _nil->right = _root;
 				else if (_compare(val.first, y->key.first))
 					y->left = newNode;
 				else
 					y->right = newNode;
 				newNode->left = newNode->right = _nil;
-				// newNode->color = RED;
+				newNode->color = RED;
 				insertFixup(newNode);
 				++_size;
 				std::cout<<newNode->key.first <<" was added:\n";
@@ -120,13 +121,14 @@ namespace ft
 							y->color = BLACK;
 							z->parent->parent->color = RED;
 							z = z->parent->parent;}
-						else if (z == z->parent->right){ //y is black case, triangle relationship
-							z = z->parent;
-							leftRotate(z);}
-						z->parent->color = BLACK;
-						if (z->parent != _nil){
-						z->parent->parent->color = RED;
-						rightRotate(z->parent->parent);}}
+						else {
+							if (z == z->parent->right){ //y is black case, triangle relationship
+								z = z->parent;
+								leftRotate(z);}
+							z->parent->color = BLACK;
+							z->parent->parent->color = RED;
+							rightRotate(z->parent->parent);}
+					}
 					else {
 						y = z->parent->parent->left;
 						if (y->color == RED){ // y (uncle) is red case
@@ -134,13 +136,14 @@ namespace ft
 							y->color = BLACK;
 							z->parent->parent->color = RED;
 							z = z->parent->parent;}
-						else if (z == z->parent->left){ //y is black case, triangle relationship
-							z = z->parent;
-							rightRotate(z);}
-						z->parent->color = BLACK;
-						if (z->parent != _nil){
+						else {
+							if (z == z->parent->left){ //y is black case, triangle relationship
+								z = z->parent;
+								rightRotate(z);}
+							z->parent->color = BLACK;
 							z->parent->parent->color = RED;
-						leftRotate(z->parent->parent);}}
+							leftRotate(z->parent->parent);}
+					}
 				}
 				_root->color = BLACK; // case 0
 			}
@@ -148,7 +151,6 @@ namespace ft
 			void rightRotate(node<value_type> *x)
 			{
 				node<value_type>* y = x->left;
-				std::cout<<"a!!\n";
 				x->left = y->right;
 				if (y->right != _nil)
 					y->right->parent = x;
@@ -188,18 +190,17 @@ namespace ft
 					std::cout << (isLeft ? "├──" : "└──" );
 					
 					if (nodeV == _nil){
-						std::cout <<"\033[0;33m"<< "nil" << "\033[0m"<<std::endl;
+						std::cout <<"\033[0;36m"<< "nil" << "\033[0m"<<std::endl;
 						return ;
 					}
 					// print the value of the node
 					if (nodeV->color == 0)
-						std::cout <<"\033[0;33m"<< nodeV->key.first<<"\033[0m"<<std::endl;
+						std::cout <<"\033[0;36m"<< nodeV->key.first<<"\033[0m"<<std::endl;
 					else
 						std::cout <<"\033[0;31m"<< nodeV->key.first << "\033[0m"<<std::endl;
 					printBT( prefix + (isLeft ? "│   " : "    "), nodeV->left, true);
 					printBT( prefix + (isLeft ? "│   " : "    "), nodeV->right, false);
-
-				
+	
 				
 			}
 			void printBT(){

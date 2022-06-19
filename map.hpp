@@ -46,10 +46,9 @@ namespace ft
 			// typedef typename ft::mapIterator<const node<value_type>*, value_type>		const_iterator;
 
 		private:
-			Compare _comp;
-			Allocator _alloc;
 			typedef typename Allocator::template rebind< node<value_type> >::other		allocatorNode;
-			
+			Compare _comp;
+			Allocator _alloc;			
 			ft::tree<value_type, key_compare, allocatorNode> _tree;
 
 		public:
@@ -77,10 +76,7 @@ namespace ft
 			// {
 				
 			// };
-			// map (const map& x){
-				
-				
-			// };
+			map (const map& x):_comp(x._comp), _alloc(x._alloc), _tree(x._tree){};
 
 		
 			~map(){};

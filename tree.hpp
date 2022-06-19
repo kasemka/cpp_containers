@@ -24,8 +24,8 @@ namespace ft
 		struct node* right;
 
 		T key;
-		node():color(BLACK), isNill(1),parent(this), left(this), right(this){}; //for nil
-		node(T pair):color(RED), isNill(0), parent(this), left(0), right(0), key(pair){};
+		node():color(BLACK), isNill(1),parent(0), left(0), right(0){}; //for nil
+		node(T pair):color(RED), isNill(0), parent(0), left(0), right(0), key(pair){};
 		node(const node &other): 
 		color(other.color), isNill(other.isNill), parent(other.parent), left(other.left), right(other.right), key(other.key) {};
 
@@ -104,7 +104,7 @@ namespace ft
 				insertFixup(newNode);
 				++_size;
 				std::cout<<newNode->key.first <<" was added:\n";
-				printBT();
+				printTree();
 				std::cout<<std::endl;
 				return (ft::make_pair(newNode, true));
 
@@ -181,6 +181,17 @@ namespace ft
 				x->parent = y;
 			}
 
+			void transplant(node<value_type> *u, node<value_type> *v)
+			{
+				if (u->parent == _nil)
+					_root = v;
+				else if (u == u->parent->left)
+					u->parent->left = v;
+				else
+					u->parent->right = v;
+				v->parent = u->parent;
+			}
+
 
 
 			void printBT(const std::string& prefix, const node<value_type>* nodeV, bool isLeft)
@@ -203,7 +214,8 @@ namespace ft
 	
 				
 			}
-			void printBT(){
+
+			void printTree(){
 				printBT("", _root, false);
 			}
 	

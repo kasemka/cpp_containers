@@ -113,6 +113,7 @@ namespace ft
 			void insertFixup(node<value_type> *z)
 			{
 				node<value_type>* y;
+
 				while (z->parent->color == RED){ // parent is red 
 					if (z->parent == z->parent->parent->left){ // z parent is left child
 						y = z->parent->parent->right;
@@ -192,7 +193,98 @@ namespace ft
 				v->parent = u->parent;
 			}
 
+			node<value_type> *treeMin(node<value_type> *x)
+			{
+				while (x->left != _nil)
+					x = x->left;
+				return (x);
+			}
 
+			void deleteFixup(node<value_type> *x){
+				node<value_type> *w;
+
+				while (x != _root && x->color == BLACK){
+					if (x == x->parent->left){
+						w = x->parent->right;
+						if (w->color == RED){
+							w->color = BLACK;
+							x->parent->color = RED;
+							leftRotate(x->parent);
+							w = x->parent->right; }
+						if (w->left->color == BLACK && w->right->color == BLACK){
+							w->color = RED;
+							x = x->parent; }
+						else {
+							if (w->right->color == BLACK) {
+								w->left->color = BLACK;
+								w->color = RED;
+								rightRotate(w);
+								w = x->parent->right; }
+							w->color = x->parent->color;
+							x->parent->color = BLACK;
+							w->right->color = BLACK;
+							leftRotate(x->parent);
+							x = _root;
+						}		
+					}
+					else {
+						w = x->parent->left;
+						if (w->color == RED){
+							w->color = BLACK;
+							x->parent->color = RED;
+							rightRotate(x->parent);
+							w = x->parent->left; }
+						if (w->right->color == BLACK && w->left->color == BLACK){
+							w->color = RED;
+							x = x->parent; }
+						else {
+							if (w->left->color == BLACK) {
+								w->right->color = BLACK;
+								w->color = RED;
+								leftRotate(w);
+								w = x->parent->left; }
+							w->color = x->parent->color;
+							x->parent->color = BLACK;
+							w->left->color = BLACK;
+							rightRotate(x->parent);
+							x = _root;}
+					}
+				}
+				x->color = BLACK;
+			}
+			
+			void rbTreeDelete(node<value_type> *z)
+			{
+				node<value_type> 	*x;
+				node<value_type> 	*y = z;
+				int 				yOriginalColor = y->color;
+
+				if (z->left == _nil){
+					x = z->right; 
+					transplant(z, z->right); }
+				else if (z->right == _nil) {
+					x = z->left; 
+					transplant(z, z->left);}
+				else {
+					y = treeMinimum(z->right);
+					yOriginalColor = y->color;
+					x = y->right;
+					if (y->parent == z)
+						x->parent = y;
+					else{
+						transplant(y, y->right);
+						y->right = z->right;
+						y->right->parent = y;}
+					transplant(z, y);
+					y->left = z->left;
+					y->left->parent = y;
+					y->color = z->color; }
+				if (yOriginalColor == BLACK)
+					deleteFixup(x);
+				_alloc.destroy(z);
+				_alloc.deallocate(z, sizeof(node<value_type>));
+
+			}
 
 			void printBT(const std::string& prefix, const node<value_type>* nodeV, bool isLeft)
 			{
@@ -218,6 +310,7 @@ namespace ft
 			void printTree(){
 				printBT("", _root, false);
 			}
+			
 	
 	};
 	 

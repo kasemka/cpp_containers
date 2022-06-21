@@ -68,7 +68,7 @@ namespace ft
 			iteratorVector(const iteratorVector<_Up>& __u, typename std::enable_if<std::is_convertible<_Up, iterator_type>::value>::type* = 0): _elem(__u.base()){};
 
 			~iteratorVector() {};
-			// T base() const  { return _elem; }
+			T base() const  { return _elem; }
 
 
 
@@ -165,7 +165,7 @@ namespace ft
 
 
 
-	template< class T, class U>
+	template< class T, class U, class Compare>
 	struct mapIterator
 	{	
 		public:
@@ -181,22 +181,76 @@ namespace ft
 
 		private:
 			T _iter;
+			Compare _comp;
 
 		public:
 			mapIterator(T val = nullptr) : _iter(val){};
 			
 			~mapIterator(){};
 
+			T base(){ return _iter; }			
+
 			reference operator*() const {return _iter->key;}
 			pointer operator->() const {return &(_iter->key);}
 
-			mapIterator& operator++() {++_iter; return *this;};
+			iterator_type min(iterator_type x)
+			{
+				while (x->left->isNil != true)
+					x = x->left;
+				return (x);
+			}
+
+			iterator_type max(iterator_type x)
+			{
+				while (x->right->isNil != true)
+					x = x->right;
+				return (x);
+			}
+
+			iterator_type next(iterator_type x){
+				iterator_type y;
+				
+				if (_iter->right->isNil == false)
+					return(min(_iter->right));
+				y = _iter->parent;
+				while (y->isNil == false && _iter == y->right){ // for cas if y is right kid of it's parent
+					_iter = y;
+					y = y->parent;
+				}
+				return (y);
+			}
+
+			iterator_type prev(iterator_type x){
+				iterator_type y;
+				// if (_iter->isNil == true){
+				// 	return (max(_iter->left));
+				// }
+				if (_iter->isNil == true || _iter->left->isNil == false)
+					return(max(_iter->left));
+				y = _iter->parent;
+				while (y->isNil == false && _iter == y->left){ // for cas if y is left kid of it's parent
+					_iter = y;
+					y = y->parent;
+				}
+				return (y);
+			}
+
+			mapIterator& operator++() {
+				_iter = next(_iter);
+				return (*this);
+			}
+
 			mapIterator operator++(int){ 
 				mapIterator tem(*this);
 				++(*this);
 				return tem;
 			}	
-			mapIterator& operator--() {--_iter; return *this;};
+			mapIterator& operator--() {
+				_iter = prev(_iter);
+				return *this; 
+				
+			};
+
 			mapIterator operator--(int){
 				mapIterator tem(*this);
 				--(*this);

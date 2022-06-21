@@ -18,16 +18,16 @@ namespace ft
 	struct node
 	{
 		int color;
-		int isNill; // 
+		bool isNil; // 
 		struct node* parent;
 		struct node* left;
 		struct node* right;
 
 		T key;
-		node():color(BLACK), isNill(1),parent(0), left(0), right(0){}; //for nil
-		node(T pair):color(RED), isNill(0), parent(0), left(0), right(0), key(pair){};
+		node():color(BLACK), isNil(1),parent(0), left(0), right(0){}; //for nil
+		node(T pair):color(RED), isNil(0), parent(0), left(0), right(0), key(pair){};
 		node(const node &other): 
-		color(other.color), isNill(other.isNill), parent(other.parent), left(other.left), right(other.right), key(other.key) {};
+		color(other.color), isNil(other.isNil), parent(other.parent), left(other.left), right(other.right), key(other.key) {};
 
 	};
 
@@ -62,16 +62,16 @@ namespace ft
 
 			node<value_type>* begin(void){
 				node<value_type>* tmp = _root;
-				while (tmp != _nil)
+				while (tmp->left != _nil)
 					tmp = tmp->left;
-				return (tmp->parent);
+				return (tmp);
 			}
 
 			node<value_type>* end(void){
 				node<value_type>* tmp = _root;
 				while (tmp != _nil)
 					tmp = tmp->right;
-				return (tmp->parent);
+				return (tmp);
 			}
 			
 			
@@ -259,6 +259,7 @@ namespace ft
 				node<value_type> 	*y = z;
 				int 				yOriginalColor = y->color;
 
+
 				if (z->left == _nil){
 					x = z->right; 
 					transplant(z, z->right); }
@@ -266,7 +267,7 @@ namespace ft
 					x = z->left; 
 					transplant(z, z->left);}
 				else {
-					y = treeMinimum(z->right);
+					y = treeMin(z->right);
 					yOriginalColor = y->color;
 					x = y->right;
 					if (y->parent == z)
@@ -285,6 +286,25 @@ namespace ft
 				_alloc.deallocate(z, sizeof(node<value_type>));
 
 			}
+
+			// tree &operator++(node<value_type> *_iter)
+			// {
+			// 	if (_iter->right->isNil){
+			// 		if (_iter == _iter->parent->left)
+			// 			_iter = _iter->parent;
+			// 		else
+			// 			_iter = _iter->parent->parent;
+			// 	}
+			// 	else {
+			// 		_iter = _iter->right;
+			// 		while (_iter->left->isNil == false)
+			// 			_iter = _iter->left;
+
+			// 		// std::cout << _iter->isNil <<"-is nil, key="<<_iter->key.first<<std::endl;
+			// 		// std::cout << _iter->right->isNil <<"-is nil, key="<<_iter->right->key.first<<std::endl;
+					
+			// 	}
+			// }
 
 			void printBT(const std::string& prefix, const node<value_type>* nodeV, bool isLeft)
 			{
@@ -307,6 +327,7 @@ namespace ft
 				
 			}
 
+			
 			void printTree(){
 				printBT("", _root, false);
 			}

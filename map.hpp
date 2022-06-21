@@ -42,7 +42,7 @@ namespace ft
 			typedef typename Allocator::const_pointer									const_pointer;
 			typedef typename Allocator::size_type										size_type;
 			typedef typename Allocator::difference_type									difference_type;
-			typedef typename ft::mapIterator<node<value_type>*, value_type>				iterator;
+			typedef typename ft::mapIterator<node<value_type>*, value_type, Compare>	iterator;
 			// typedef typename ft::mapIterator<const node<value_type>*, value_type>		const_iterator;
 
 		private:
@@ -77,8 +77,6 @@ namespace ft
 				
 			// };
 			map (const map& x):_comp(x._comp), _alloc(x._alloc), _tree(x._tree){};
-
-		
 			~map(){};
 
 	
@@ -90,17 +88,14 @@ namespace ft
 			iterator end(){
 				return iterator(_tree.end());
 			};
-			ft::pair<iterator,bool> insert(const value_type& v)
-			{
-				return (_tree.insertNode(v));
 
-			}
-			
+			ft::pair<iterator,bool> insert(const value_type& v){ return (_tree.insertNode(v)); }
+			void erase (iterator position){ _tree.rbTreeDelete((position.base())); }
 
 			//remove it later
 			void printTree()
 			{
-				_tree.printBT();
+				_tree.printTree();
 				
 			}
 

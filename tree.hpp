@@ -303,7 +303,8 @@ namespace ft
 				_alloc.destroy(z);
 				std::cout << "z deallocate "<<z<<std::endl;
 				_alloc.deallocate(z, sizeof(node<value_type>));
-
+				if (_size == 0)
+					_root = _nil;
 			}
 
 			size_t size(void) const { return _size; }
@@ -353,7 +354,7 @@ namespace ft
 				
 				if (x->right->isNil == false)
 					return(min(x->right));
-				if (x == end())
+				if (x == max(_root))
 					return _nil;
 				y = x->parent;
 				while (y->isNil == false && x == y->right){ // for case if y is right kid of it's parent

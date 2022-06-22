@@ -23,30 +23,29 @@ namespace ft
 		struct node* left;
 		struct node* right;
 
-		T key;
+		T key; // allocates with notes
 		node():color(BLACK), isNil(1),parent(0), left(0), right(0){}; //for nil
 		node(T pair):color(RED), isNil(0), parent(0), left(0), right(0), key(pair){};
 		node(const node &other): 
 		color(other.color), isNil(other.isNil), parent(other.parent), left(other.left), right(other.right), key(other.key) {};
-
+		~node(){};
 	};
 
 
 
-	template <class _Tp, class _Compare, class _Allocator>
+	template <class Tp, class Compare, class Allocator>
 	class tree
 	{
 		public:
-			typedef _Tp 				value_type;
-			typedef _Compare 			value_compare;
-			typedef _Allocator 			allocator_type;
-			
+			typedef Tp 						value_type;
+			typedef Compare 				value_compare;
+			typedef Allocator 				allocator_type;
+			// typedef Allocator::
 			
 
 		private:
-			_Allocator					_alloc;
-			_Compare					_compare;
-			
+			Allocator					_alloc;
+			Compare						_compare;	
 			node<value_type>* 			_nil;
 			node<value_type>* 			_root;
 			size_t						_size; //include nil
@@ -55,15 +54,34 @@ namespace ft
 			tree():_size(0){
 				_nil = _alloc.allocate(1);
 				_alloc.construct(_nil, node<value_type>());
+				_nil->left = _nil->right = _nil->parent = _nil;
+				
 				_root = _nil;
 			};
 			
-			~tree(){};
+			~tree(){
+				node<value_type>* start = begin();
+
+				for (node<value_type>* node; start != _nil; ){					
+					// std::cout << start->isNil << ", dealloc "<< start->key.first <<std::endl;
+					node = start;
+					start = next(start);
+					_alloc.destroy(node);
+					_alloc.deallocate(node, sizeof(ft::node<value_type>));
+					// std::cout << "node deallocate "<< start<<std::endl;
+				}
+				// std::cout << "_nil deallocate "<< _nil <<std::endl;
+				// std::cout << start->isNil << ", nil dealloc  "<< start->key.first <<std::endl;
+				_alloc.destroy(_nil);
+				_alloc.deallocate(_nil, sizeof(ft::node<value_type>));
+
+
+			};
 
 			node<value_type>* begin(void){
-				node<value_type>* tmp = _root;
-				while (tmp->left != _nil)
-					tmp = tmp->left;
+				node<value_type>* tmp = min(_root);
+				// while (tmp->left != _nil)
+				// 	tmp = tmp->left;
 				return (tmp);
 			}
 
@@ -73,8 +91,7 @@ namespace ft
 					tmp = tmp->right;
 				return (tmp);
 			}
-			
-			
+					
 			ft::pair<node<value_type>*, bool> insertNode(const value_type& val)
 			{
 				node<value_type>* x = _root;
@@ -84,7 +101,7 @@ namespace ft
 					y = x;
 					if (x->key.first == val.first)
 						return (ft::make_pair(x, false));
-					if (_compare(val.first, x->key.first))
+					if  (_compare(val.first, x->key.first))
 						x = x->left;
 					else
 						x = x->right;}
@@ -95,7 +112,7 @@ namespace ft
 					_root = newNode;
 					_root->parent = _nil; //different from algor
 					_nil->left = _root;} // !!!! _nil->right = _root;
-				else if (_compare(val.first, y->key.first))
+				else if  (_compare(val.first, y->key.first))
 					y->left = newNode;
 				else
 					y->right = newNode;
@@ -196,12 +213,7 @@ namespace ft
 				v->parent = u->parent;
 			}
 
-			node<value_type> *treeMin(node<value_type> *x)
-			{
-				while (x->left != _nil)
-					x = x->left;
-				return (x);
-			}
+			
 
 			void deleteFixup(node<value_type> *x){
 				node<value_type> *w;
@@ -262,7 +274,9 @@ namespace ft
 				node<value_type> 	*y = z;
 				int 				yOriginalColor = y->color;
 
-
+				if (z == _nil){
+					std::cerr << "Tree end() cannot be erased" << std::endl;
+					throw ; }
 				if (z->left == _nil){
 					x = z->right; 
 					transplant(z, z->right); }
@@ -270,7 +284,7 @@ namespace ft
 					x = z->left; 
 					transplant(z, z->left);}
 				else {
-					y = treeMin(z->right);
+					y = min(z->right);
 					yOriginalColor = y->color;
 					x = y->right;
 					if (y->parent == z)
@@ -285,29 +299,14 @@ namespace ft
 					y->color = z->color; }
 				if (yOriginalColor == BLACK)
 					deleteFixup(x);
+				--_size;
 				_alloc.destroy(z);
+				std::cout << "z deallocate "<<z<<std::endl;
 				_alloc.deallocate(z, sizeof(node<value_type>));
 
 			}
 
-			// tree &operator++(node<value_type> *_iter)
-			// {
-			// 	if (_iter->right->isNil){
-			// 		if (_iter == _iter->parent->left)
-			// 			_iter = _iter->parent;
-			// 		else
-			// 			_iter = _iter->parent->parent;
-			// 	}
-			// 	else {
-			// 		_iter = _iter->right;
-			// 		while (_iter->left->isNil == false)
-			// 			_iter = _iter->left;
-
-			// 		// std::cout << _iter->isNil <<"-is nil, key="<<_iter->key.first<<std::endl;
-			// 		// std::cout << _iter->right->isNil <<"-is nil, key="<<_iter->right->key.first<<std::endl;
-					
-			// 	}
-			// }
+			size_t size(void) const { return _size; }
 
 			void printBT(const std::string& prefix, const node<value_type>* nodeV, bool isLeft)
 			{
@@ -329,16 +328,56 @@ namespace ft
 	
 				
 			}
-
 			
 			void printTree(){
 				printBT("", _root, false);
 			}
-			
+
+			node<value_type>* min(node<value_type>* x){
+				while (x->left->isNil != true)
+					x = x->left;
+				return (x);
+			}
+
+			node<value_type>* max(node<value_type>* x){
+		
+				while (x->right->isNil != true)
+					x = x->right;
 	
+				return (x);
+			}
+
+			node<value_type>* next(node<value_type>*  x){
+				node<value_type>*  y;
+				
+				
+				if (x->right->isNil == false)
+					return(min(x->right));
+				if (x == end())
+					return _nil;
+				y = x->parent;
+				while (y->isNil == false && x == y->right){ // for case if y is right kid of it's parent
+					x = y;
+					y = y->parent;
+				}
+				return (y);
+			}
+
+			node<value_type>* prev(node<value_type>*  x){
+				node<value_type>* y;
+
+				if (x->isNil == true || x->left->isNil == false)
+					return(max(x->left));
+				y = x->parent;
+				while (y->isNil == false && x == y->left){ // for case if y is left kid of it's parent
+					x = y;
+					y = y->parent;
+				}
+				return (y);
+			}
+
 	};
 	 
-
 }
 
 #endif

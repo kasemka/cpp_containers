@@ -31,23 +31,23 @@ namespace ft
 
 		public:
 			// types:
-			typedef Key																	key_type;
-			typedef T																	mapped_type;
-			typedef ft::pair<const key_type, mapped_type>								value_type;
-			typedef Compare																key_compare;
-			typedef Allocator															allocator_type;
-			typedef typename Allocator::reference										reference;
-			typedef typename Allocator::const_reference									const_reference;
-			typedef typename Allocator::pointer											pointer;
-			typedef typename Allocator::const_pointer									const_pointer;
-			typedef typename Allocator::size_type										size_type;
-			typedef typename Allocator::difference_type									difference_type;
-			typedef typename ft::mapIterator<node<value_type>*, value_type, Compare>	iterator;
-			// typedef typename ft::mapIterator<const node<value_type>*, value_type>		const_iterator;
+			typedef Key																			key_type;
+			typedef T																			mapped_type;
+			typedef ft::pair<const key_type, mapped_type>										value_type;
+			typedef Compare																		key_compare;
+			typedef Allocator																	allocator_type;
+			typedef typename Allocator::reference												reference;
+			typedef typename Allocator::const_reference											const_reference;
+			typedef typename Allocator::pointer													pointer;
+			typedef typename Allocator::const_pointer											const_pointer;
+			typedef typename Allocator::size_type												size_type;
+			typedef typename Allocator::difference_type											difference_type;
+			typedef typename ft::mapIterator<node<value_type>*, value_type, Compare>			iterator;
+			typedef typename ft::mapIterator<const node<value_type>*, value_type, Compare>		const_iterator;
 
 		private:
 			typedef typename Allocator::template rebind< node<value_type> >::other		allocatorNode;
-			Compare _comp;
+			Compare _comp; //создание структуры
 			Allocator _alloc;			
 			ft::tree<value_type, key_compare, allocatorNode> _tree;
 
@@ -70,14 +70,16 @@ namespace ft
 				_comp(comp), _alloc(alloc), _tree(ft::tree<value_type, key_compare, allocatorNode>()){};
 		
 
-			// template <class InputIterator>
-			// 	map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
-			// 	const allocator_type& alloc = allocator_type())
-			// {
+			template <class InputIterator>
+				map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
+				const allocator_type& alloc = allocator_type())
+			{
 				
-			// };
+			};
 			map (const map& x):_comp(x._comp), _alloc(x._alloc), _tree(x._tree){};
-			~map(){};
+			~map(){
+
+			};
 
 	
 			// // iterators:
@@ -98,6 +100,12 @@ namespace ft
 				_tree.printTree();
 				
 			}
+
+
+			//capacity
+			bool empty() const;
+			size_type size() const {return _tree.size();}
+			size_type max_size() const { return (allocatorNode().max_size());};
 
 		};
 

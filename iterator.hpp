@@ -207,7 +207,7 @@ namespace ft
 				return (x);
 			}
 
-			iterator_type next(iterator_type x){
+			iterator_type next(){
 				iterator_type y;
 				
 				if (_iter->right->isNil == false)
@@ -220,11 +220,9 @@ namespace ft
 				return (y);
 			}
 
-			iterator_type prev(iterator_type x){
+			iterator_type prev(){
 				iterator_type y;
-				// if (_iter->isNil == true){
-				// 	return (max(_iter->left));
-				// }
+
 				if (_iter->isNil == true || _iter->left->isNil == false)
 					return(max(_iter->left));
 				y = _iter->parent;
@@ -236,7 +234,7 @@ namespace ft
 			}
 
 			mapIterator& operator++() {
-				_iter = next(_iter);
+				_iter = next();
 				return (*this);
 			}
 
@@ -246,7 +244,7 @@ namespace ft
 				return tem;
 			}	
 			mapIterator& operator--() {
-				_iter = prev(_iter);
+				_iter = prev();
 				return *this; 
 				
 			};

@@ -55,7 +55,6 @@ namespace ft
 				_nil = _alloc.allocate(1);
 				_alloc.construct(_nil, node<value_type>());
 				_nil->left = _nil->right = _nil->parent = _nil;
-				
 				_root = _nil;
 			};
 			
@@ -120,9 +119,9 @@ namespace ft
 				newNode->color = RED;
 				insertFixup(newNode);
 				++_size;
-				std::cout<<newNode->key.first <<" was added:\n";
-				printTree();
-				std::cout<<std::endl;
+				// std::cout<<newNode->key.first <<" was added:\n";
+				// printTree();
+				// std::cout<<std::endl;
 				return (ft::make_pair(newNode, true));
 
 			}
@@ -301,7 +300,7 @@ namespace ft
 					deleteFixup(x);
 				--_size;
 				_alloc.destroy(z);
-				std::cout << "z deallocate "<<z<<std::endl;
+				// std::cout << "z deallocate "<<z<<std::endl;
 				_alloc.deallocate(z, sizeof(node<value_type>));
 				if (_size == 0)
 					_root = _nil;

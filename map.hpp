@@ -72,10 +72,10 @@ namespace ft
 
 			template <class InputIterator>
 				map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
-				const allocator_type& alloc = allocator_type())
-			{
-				
-			};
+				const allocator_type& alloc = allocator_type()): 
+				_comp(comp), _alloc(alloc), _tree(ft::tree<value_type, key_compare, allocatorNode>())
+			{ insert(first, last);};
+
 			map (const map& x):_comp(x._comp), _alloc(x._alloc), _tree(x._tree){};
 			~map(){
 
@@ -92,6 +92,20 @@ namespace ft
 			};
 
 			ft::pair<iterator,bool> insert(const value_type& v){ return (_tree.insertNode(v)); }
+
+
+			template <class InputIterator>
+			void insert (InputIterator first, InputIterator last)
+			{
+				while (first != last){
+					_tree.insertNode(value_type(first->first, first->second));
+					++first;
+				}
+
+			}
+
+			// iterator insert (iterator position, const value_type& val);
+
 			void erase (iterator position){ _tree.rbTreeDelete((position.base())); }
 
 			//remove it later
@@ -103,9 +117,12 @@ namespace ft
 
 
 			//capacity
-			bool empty() const;
+			bool empty() const { return (_tree.size() ? false : true); };
 			size_type size() const {return _tree.size();}
 			size_type max_size() const { return (allocatorNode().max_size());};
+
+
+			
 
 		};
 

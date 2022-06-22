@@ -188,10 +188,9 @@ namespace ft
 			
 			~mapIterator(){};
 
-			T base(){ return _iter; }			
+			T base() const { return _iter; }			
 
-			reference operator*() const {return _iter->key;}
-			pointer operator->() const {return &(_iter->key);}
+			
 
 			iterator_type min(iterator_type x)
 			{
@@ -254,7 +253,9 @@ namespace ft
 				--(*this);
 				return tem;
 			}
-
+			
+			reference operator*() const {return _iter->key;}
+			pointer operator->() const {return &(_iter->key);}
 			friend
 			bool operator==(const mapIterator& x, const mapIterator& y)
 			{return x._iter == y._iter;};

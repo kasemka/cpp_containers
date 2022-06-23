@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "utils.hpp"
+#include "iterator.hpp"
 
 
 #define BLACK 0
@@ -39,9 +40,9 @@ namespace ft
 	class tree
 	{
 		public:
-			typedef Pair 					value_type;
-			typedef Compare 				value_compare;
-			typedef Allocator 				allocator_type;
+			typedef Pair 																		value_type;
+			typedef Compare 																	value_compare;
+			typedef Allocator 																	allocator_type;
 			// typedef Allocator::
 			
 
@@ -68,23 +69,21 @@ namespace ft
 			// };
 
 
-			~tree(){ clearAll(); };
+			~tree(){ 
+				clearAll(); 
+			};
 
 
 			void clear(void)
 			{
-				node<value_type>* start = begin();
+				node<value_type>* rmNode; 
 
-				// std::cout << "begin deallocate "<< start->key.first <<std::endl;
-				for (node<value_type>* node; start != _nil; ){					
-					// std::cout << start->isNil << ", dealloc "<< start->key.first <<std::endl;
-					node = start;
-					start = next(start);
-					_alloc.destroy(node);
-					_alloc.deallocate(node, sizeof(ft::node<value_type>));
-					// std::cout << "node deallocate "<< node->key.first <<", color = "<< node->color<<std::endl;
+				while (_size > 0){
+					rmNode = _root;
+					rbTreeDelete(rmNode);
+					
 				}
-				_size = 0;
+
 			}
 
 			void clearAll(void)
@@ -326,9 +325,14 @@ namespace ft
 					_root = _nil;
 			}
 
+			node<value_type>* treeSearch()
+			{
+				
+			}
+
 			size_t size(void) const { return _size; }
 
-			void printBT(const std::string& prefix, const node<value_type>* nodeV, bool isLeft)
+			void printBT(const std::string& prefix, const node<value_type>* nodeV, bool isLeft) const
 			{
 					std::cout << prefix;
 
@@ -349,6 +353,8 @@ namespace ft
 				
 			}
 			
+			
+
 			void printTree(){
 				printBT("", _root, false);
 			}
@@ -359,42 +365,46 @@ namespace ft
 				return (x);
 			}
 
-			node<value_type>* max(node<value_type>* x) const {
+			// node<value_type>* max(node<value_type>* x) const {
 		
-				while (x->right->isNil != true)
-					x = x->right;
+			// 	while (x->right->isNil != true)
+			// 		x = x->right;
 	
-				return (x);
-			}
+			// 	return (x);
+			// }
 
-			node<value_type>* next(node<value_type>*  x) const {
-				node<value_type>*  y;
+			// node<value_type>* next(node<value_type>*  x) const {
+			// 	node<value_type>*  y;
 				
 				
-				if (x->right->isNil == false)
-					return(min(x->right));
-				if (x == max(_root))
-					return _nil;
-				y = x->parent;
-				while (y->isNil == false && x == y->right){ // for case if y is right kid of it's parent
-					x = y;
-					y = y->parent;
-				}
-				return (y);
-			}
+			// 	if (x->right->isNil == false){
+			// 		// std::cout<<"min right returned"<<std::endl;
+			// 		return(min(x->right));
+			// 	}
+			// 	if (x == max(_root)){
+			// 		// std::cout<<"nil returned"<<std::endl;
+			// 		return _nil;}
+			// 	y = x->parent;
+			// 	while (y->isNil == false && x == y->right){ // for case if y is right kid of it's parent
 
-			node<value_type>* prev(node<value_type>*  x) const {
-				node<value_type>* y;
+			// 		x = y;
+			// 		y = y->parent;
+			// 	}
+			// 	return (y);
+			// }
 
-				if (x->isNil == true || x->left->isNil == false)
-					return(max(x->left));
-				y = x->parent;
-				while (y->isNil == false && x == y->left){ // for case if y is left kid of it's parent
-					x = y;
-					y = y->parent;
-				}
-				return (y);
-			}
+			// node<value_type>* prev(node<value_type>*  x) const {
+			// 	node<value_type>* y;
+
+			// 	if (x->isNil == true || x->left->isNil == false)
+			// 		return(max(x->left));
+			// 	y = x->parent;
+			// 	while (y->isNil == false && x == y->left){ // for case if y is left kid of it's parent
+			// 		x = y;
+			// 		y = y->parent;
+			// 	}
+			// 	return (y);
+			// }
 
 	};
 	 

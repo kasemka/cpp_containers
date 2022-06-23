@@ -90,6 +90,8 @@ namespace ft
 			
 			iterator end() const { return iterator(_tree.end()); };
 
+			// iterator end1() const { return iterator(_tree.prev(_tree.end())); }; ////////////////// remove it!
+
 			ft::pair<iterator,bool> insert(const value_type& v){ return (_tree.insertNode(v)); }
 
 
@@ -107,6 +109,9 @@ namespace ft
 			// iterator insert (iterator position, const value_type& val);
 
 			void erase (iterator position){ _tree.rbTreeDelete((position.base())); }
+			size_type erase (const key_type& k){
+				
+			}
 
 			//remove it later
 			void printTree()

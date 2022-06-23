@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <memory>
-#include "tree.hpp"
+// #include "tree.hpp"
 #include "utils.hpp"
 
 
@@ -208,26 +208,42 @@ namespace ft
 
 			iterator_type next(){
 				iterator_type y;
-				
+				// std::cout<<"next begin "<<std::endl;
 				if (_iter->right->isNil == false)
 					return(min(_iter->right));
 				y = _iter->parent;
+			
 				while (y->isNil == false && _iter == y->right){ // for cas if y is right kid of it's parent
+					// std::cout<<"start loop 217"<<std::endl;
 					_iter = y;
+					// std::cout<<"start loop 218"<<std::endl;
+					// std::cout<<"loop is nil "<< y->isNil<<std::endl;
+					
+					// std::cout<<"kids left "<< y->left->key.first <<", right = "<< y->right->key.first<<std::endl;
+					// if (y == _root)
+					// 	std::cout<<"loop is root "<< y->isNil<<std::endl;
 					y = y->parent;
+					// std::cout<<"loop is y->right "<< y->right->isNil<<std::endl;
 				}
+				// std::cout<<"next 224"<<std::endl;
 				return (y);
 			}
 
 			iterator_type prev(){
 				iterator_type y;
 
-				if (_iter->isNil == true || _iter->left->isNil == false)
+				if (_iter->isNil == true || _iter->left->isNil == false){
+					// std::cout<<"prev line 236"<<std::endl;
 					return(max(_iter->left));
+				}
+				// std::cout<<"prev line 239"<<std::endl;
 				y = _iter->parent;
 				while (y->isNil == false && _iter == y->left){ // for cas if y is left kid of it's parent
+					// std::cout<<"start loop 217"<<std::endl;
 					_iter = y;
 					y = y->parent;
+					// std::cout<<"end loop 217"<<std::endl;
+
 				}
 				return (y);
 			}

@@ -76,20 +76,19 @@ namespace ft
 				_comp(comp), _alloc(alloc), _tree(ft::tree<value_type, key_compare, allocatorNode>())
 			{ insert(first, last);};
 
-			map (const map& x):_comp(x._comp), _alloc(x._alloc), _tree(x._tree){};
+			map(const map& x):_comp(x._comp), _alloc(x._alloc), 
+			_tree(ft::tree<value_type, key_compare, allocatorNode>()){
+				insert(x.begin(), x.end());
+			};
 			~map(){
 
 			};
 
 	
 			// // iterators:
-			iterator begin(){
-				return iterator(_tree.begin());
-			};
+			iterator begin() const { return iterator(_tree.begin()); };
 			
-			iterator end(){
-				return iterator(_tree.end());
-			};
+			iterator end() const { return iterator(_tree.end()); };
 
 			ft::pair<iterator,bool> insert(const value_type& v){ return (_tree.insertNode(v)); }
 
@@ -101,8 +100,9 @@ namespace ft
 					_tree.insertNode(value_type(first->first, first->second));
 					++first;
 				}
-
 			}
+
+
 
 			// iterator insert (iterator position, const value_type& val);
 

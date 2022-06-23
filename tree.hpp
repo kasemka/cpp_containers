@@ -27,17 +27,19 @@ namespace ft
 		node():color(BLACK), isNil(1),parent(0), left(0), right(0){}; //for nil
 		node(T pair):color(RED), isNil(0), parent(0), left(0), right(0), key(pair){};
 		node(const node &other): 
-		color(other.color), isNil(other.isNil), parent(other.parent), left(other.left), right(other.right), key(other.key) {};
+		color(other.color), isNil(other.isNil), parent(other.parent), left(other.left), right(other.right), key(other.key) {
+			
+		};
 		~node(){};
 	};
 
 
 
-	template <class Tp, class Compare, class Allocator>
+	template <class Pair, class Compare, class Allocator>
 	class tree
 	{
 		public:
-			typedef Tp 						value_type;
+			typedef Pair 					value_type;
 			typedef Compare 				value_compare;
 			typedef Allocator 				allocator_type;
 			// typedef Allocator::
@@ -56,35 +58,53 @@ namespace ft
 				_alloc.construct(_nil, node<value_type>());
 				_nil->left = _nil->right = _nil->parent = _nil;
 				_root = _nil;
-			};
-			
-			~tree(){
+			};		
+			// tree(const tree& copy){	*this = copy;};
+			// tree &operator=(const tree& copy): _alloc = _copy._alloc, _compare = _copy._compare, _size = copy._size {
+					
+
+
+			// 	return (*this);
+			// };
+
+
+			~tree(){ clearAll(); };
+
+
+			void clear(void)
+			{
 				node<value_type>* start = begin();
 
+				// std::cout << "begin deallocate "<< start->key.first <<std::endl;
 				for (node<value_type>* node; start != _nil; ){					
 					// std::cout << start->isNil << ", dealloc "<< start->key.first <<std::endl;
 					node = start;
 					start = next(start);
 					_alloc.destroy(node);
 					_alloc.deallocate(node, sizeof(ft::node<value_type>));
-					// std::cout << "node deallocate "<< start<<std::endl;
+					// std::cout << "node deallocate "<< node->key.first <<", color = "<< node->color<<std::endl;
 				}
+				_size = 0;
+			}
+
+			void clearAll(void)
+			{
+				clear();
 				// std::cout << "_nil deallocate "<< _nil <<std::endl;
-				// std::cout << start->isNil << ", nil dealloc  "<< start->key.first <<std::endl;
+				// std::cout << _nil->isNil << ", nil dealloc  "<< _nil->key.first <<std::endl;
 				_alloc.destroy(_nil);
 				_alloc.deallocate(_nil, sizeof(ft::node<value_type>));
 
+			}
 
-			};
-
-			node<value_type>* begin(void){
+			node<value_type>* begin(void) const {
 				node<value_type>* tmp = min(_root);
 				// while (tmp->left != _nil)
 				// 	tmp = tmp->left;
 				return (tmp);
 			}
 
-			node<value_type>* end(void){
+			node<value_type>* end(void) const {
 				node<value_type>* tmp = _root;
 				while (tmp != _nil)
 					tmp = tmp->right;
@@ -333,13 +353,13 @@ namespace ft
 				printBT("", _root, false);
 			}
 
-			node<value_type>* min(node<value_type>* x){
+			node<value_type>* min(node<value_type>* x) const {
 				while (x->left->isNil != true)
 					x = x->left;
 				return (x);
 			}
 
-			node<value_type>* max(node<value_type>* x){
+			node<value_type>* max(node<value_type>* x) const {
 		
 				while (x->right->isNil != true)
 					x = x->right;
@@ -347,7 +367,7 @@ namespace ft
 				return (x);
 			}
 
-			node<value_type>* next(node<value_type>*  x){
+			node<value_type>* next(node<value_type>*  x) const {
 				node<value_type>*  y;
 				
 				
@@ -363,7 +383,7 @@ namespace ft
 				return (y);
 			}
 
-			node<value_type>* prev(node<value_type>*  x){
+			node<value_type>* prev(node<value_type>*  x) const {
 				node<value_type>* y;
 
 				if (x->isNil == true || x->left->isNil == false)

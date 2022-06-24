@@ -151,3 +151,40 @@ strategy of insertion to red-black tree:
 rotate Z parent and grandparent (change them <->),
 brother of Z is now right kid of ex-grandparent
 
+
+without typedef we cannot use types of the class that is in it's temlplate.
+Например, у меня есть структура пара :
+	template <class key, class value> 
+	struct pair
+	{
+
+		key first;
+		value second;
+
+		pair():first(0), second(0){};
+
+		template<class U, class V> 
+			pair (const pair<U,V>& pr):first(pr.first), second(pr.second){ 	};
+		pair (const first_type& a, const second_type& b):first(a), second(b){};
+
+		pair& operator= (const pair& pr){
+			if (this != &pr){
+				first = pr.first;
+				second = pr.second;	}
+			return *this;}
+	};
+
+и вот я созадю дерево, куда передаю пару (1-аргумент):
+template <class Pair, class Compare, class Allocator>
+	class tree
+	{ ... }
+
+но мне хочется передать ключ в функцию search() дерева (tree), как указать тип этого ключа? Без тайпдеф никак
+Если бы класс struct pair	{} имела тайпдефы как ниже:
+typedef key		first_type;
+typedef value 	second_type;
+
+то в своем дереве я могла бы использовать Pair::first_type как в примере ниже
+typedef typename Pair::first_type key;
+
+и в нужную функцию дерева передать тип ключа search(const key& k){}

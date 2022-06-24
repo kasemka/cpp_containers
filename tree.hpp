@@ -24,11 +24,11 @@ namespace ft
 		struct node* left;
 		struct node* right;
 
-		T key; // allocates with notes
+		T keyValue; // allocates with notes
 		node():color(BLACK), isNil(1),parent(0), left(0), right(0){}; //for nil
-		node(T pair):color(RED), isNil(0), parent(0), left(0), right(0), key(pair){};
+		node(T pair):color(RED), isNil(0), parent(0), left(0), right(0), keyValue(pair){};
 		node(const node &other): 
-		color(other.color), isNil(other.isNil), parent(other.parent), left(other.left), right(other.right), key(other.key) {
+		color(other.color), isNil(other.isNil), parent(other.parent), left(other.left), right(other.right), keyValue(other.keyValue) {
 			
 		};
 		~node(){};
@@ -40,9 +40,11 @@ namespace ft
 	class tree
 	{
 		public:
-			typedef Pair 																		value_type;
+			typedef Pair																		value_type;
 			typedef Compare 																	value_compare;
 			typedef Allocator 																	allocator_type;
+			typedef typename value_type::first_type												key;
+			typedef typename ft::mapIterator<node<value_type>*, value_type, Compare>			iterator;
 			// typedef Allocator::
 			
 
@@ -60,11 +62,23 @@ namespace ft
 				_nil->left = _nil->right = _nil->parent = _nil;
 				_root = _nil;
 			};		
-			// tree(const tree& copy){	*this = copy;};
-			// tree &operator=(const tree& copy): _alloc = _copy._alloc, _compare = _copy._compare, _size = copy._size {
-					
+			tree(const tree& copy){	
+				*this = copy;
+			};
+			tree &operator=(const tree& copy){
+				if (this != &copy){
+					clear();
+					iterator first = copy.begin();
+					iterator last = copy.end();
+					while(first!= last){
+						insertNode(*first);
+						first++;
+					}
+					 
+				}
+				return *this;
 
-
+			}
 			// 	return (*this);
 			// };
 
@@ -73,6 +87,10 @@ namespace ft
 				clearAll(); 
 			};
 
+			key root()
+			{
+				return _root->keyValue.first;
+			}
 
 			void clear(void)
 			{
@@ -81,16 +99,12 @@ namespace ft
 				while (_size > 0){
 					rmNode = _root;
 					rbTreeDelete(rmNode);
-					
 				}
-
 			}
 
 			void clearAll(void)
 			{
 				clear();
-				// std::cout << "_nil deallocate "<< _nil <<std::endl;
-				// std::cout << _nil->isNil << ", nil dealloc  "<< _nil->key.first <<std::endl;
 				_alloc.destroy(_nil);
 				_alloc.deallocate(_nil, sizeof(ft::node<value_type>));
 
@@ -98,10 +112,10 @@ namespace ft
 
 			node<value_type>* begin(void) const {
 				node<value_type>* tmp = min(_root);
-				// while (tmp->left != _nil)
-				// 	tmp = tmp->left;
 				return (tmp);
 			}
+
+
 
 			node<value_type>* end(void) const {
 				node<value_type>* tmp = _root;
@@ -117,20 +131,21 @@ namespace ft
 				
 				while (x != _nil){
 					y = x;
-					if (x->key.first == val.first)
+					if (x->keyValue.first == val.first)
 						return (ft::make_pair(x, false));
-					if  (_compare(val.first, x->key.first))
+					if  (_compare(val.first, x->keyValue.first))
 						x = x->left;
 					else
 						x = x->right;}
 				node<value_type>* newNode = _alloc.allocate(1);
 				_alloc.construct(newNode, ft::node<value_type>(val));
+				
 				newNode->parent = y;
 				if (y == _nil){
 					_root = newNode;
 					_root->parent = _nil; //different from algor
 					_nil->left = _root;} // !!!! _nil->right = _root;
-				else if  (_compare(val.first, y->key.first))
+				else if  (_compare(val.first, y->keyValue.first))
 					y->left = newNode;
 				else
 					y->right = newNode;
@@ -317,17 +332,26 @@ namespace ft
 					y->color = z->color; }
 				if (yOriginalColor == BLACK)
 					deleteFixup(x);
-				--_size;
 				_alloc.destroy(z);
 				// std::cout << "z deallocate "<<z<<std::endl;
 				_alloc.deallocate(z, sizeof(node<value_type>));
+				--_size;
 				if (_size == 0)
 					_root = _nil;
+				
 			}
 
-			node<value_type>* treeSearch()
+			node<value_type>* treeSearch(const key& k)
 			{
-				
+				iterator x =  iterator(begin());
+
+				while (x.base()->isNil == false && k != x->first){	
+					if (k > x->first)
+						x = x.next();			
+					else 
+						x = end(); }
+				return (x.base());
+
 			}
 
 			size_t size(void) const { return _size; }
@@ -344,9 +368,9 @@ namespace ft
 					}
 					// print the value of the node
 					if (nodeV->color == 0)
-						std::cout <<"\033[0;36m"<< nodeV->key.first<<"\033[0m"<<std::endl;
+						std::cout <<"\033[0;36m"<< nodeV->keyValue.first<<"\033[0m"<<std::endl;
 					else
-						std::cout <<"\033[0;31m"<< nodeV->key.first << "\033[0m"<<std::endl;
+						std::cout <<"\033[0;31m"<< nodeV->keyValue.first << "\033[0m"<<std::endl;
 					printBT( prefix + (isLeft ? "│   " : "    "), nodeV->left, true);
 					printBT( prefix + (isLeft ? "│   " : "    "), nodeV->right, false);
 	

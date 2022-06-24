@@ -78,10 +78,6 @@ namespace ft
 				return (*this);
 			};
 
-
-
-
-
 			// iterator_type base() const {return _elem;}
 			
 			typename iteratorVector::reference operator*(void) const { return (*_elem); };
@@ -181,11 +177,18 @@ namespace ft
 
 		private:
 			T _iter;
-			Compare _comp;
+			// Compare _comp;
 
 		public:
 			mapIterator(T val = nullptr) : _iter(val){};
-			
+			mapIterator(const mapIterator &cp):_iter(cp._iter) {};
+			mapIterator &operator=(mapIterator < typename ft::remove_const< T >::type,  U, Compare> const  &cp){
+				this->_iter = cp._iter;
+				return (*this);
+			};
+
+
+
 			~mapIterator(){};
 
 			T base() const { return _iter; }			
@@ -208,24 +211,14 @@ namespace ft
 
 			iterator_type next(){
 				iterator_type y;
-				// std::cout<<"next begin "<<std::endl;
 				if (_iter->right->isNil == false)
 					return(min(_iter->right));
 				y = _iter->parent;
 			
 				while (y->isNil == false && _iter == y->right){ // for cas if y is right kid of it's parent
-					// std::cout<<"start loop 217"<<std::endl;
 					_iter = y;
-					// std::cout<<"start loop 218"<<std::endl;
-					// std::cout<<"loop is nil "<< y->isNil<<std::endl;
-					
-					// std::cout<<"kids left "<< y->left->key.first <<", right = "<< y->right->key.first<<std::endl;
-					// if (y == _root)
-					// 	std::cout<<"loop is root "<< y->isNil<<std::endl;
 					y = y->parent;
-					// std::cout<<"loop is y->right "<< y->right->isNil<<std::endl;
 				}
-				// std::cout<<"next 224"<<std::endl;
 				return (y);
 			}
 
@@ -233,18 +226,12 @@ namespace ft
 				iterator_type y;
 
 				if (_iter->isNil == true || _iter->left->isNil == false){
-					// std::cout<<"prev line 236"<<std::endl;
 					return(max(_iter->left));
 				}
-				// std::cout<<"prev line 239"<<std::endl;
 				y = _iter->parent;
 				while (y->isNil == false && _iter == y->left){ // for cas if y is left kid of it's parent
-					// std::cout<<"start loop 217"<<std::endl;
 					_iter = y;
-					y = y->parent;
-					// std::cout<<"end loop 217"<<std::endl;
-
-				}
+					y = y->parent;}
 				return (y);
 			}
 
@@ -270,8 +257,12 @@ namespace ft
 				return tem;
 			}
 			
-			reference operator*() const {return _iter->key;}
-			pointer operator->() const {return &(_iter->key);}
+			reference operator*() {return _iter->keyValue;}
+			const_reference operator*() const {return _iter->keyValue;}
+			pointer operator->() {return &(_iter->keyValue);}
+			const_pointer operator->() const {return &(_iter->keyValue);}
+
+
 			friend
 			bool operator==(const mapIterator& x, const mapIterator& y)
 			{return x._iter == y._iter;};
@@ -279,9 +270,6 @@ namespace ft
 			friend
 			bool operator!=(const mapIterator& x, const mapIterator& y)
 			{return x._iter != y._iter;};
-
-
-
 
 
 	};

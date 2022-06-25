@@ -45,8 +45,8 @@ namespace ft
 
 			typedef typename ft::mapIterator<node<value_type>*, value_type, Compare>					iterator;
 			typedef typename ft::mapIterator<const node<value_type>*, const value_type, Compare>		const_iterator;
-			// typedef ft::reverse_iterator<iterator>														reverse_iterator;
-			// typedef ft::reverse_iterator<const_iterator>												const_reverse_iterator;
+			typedef ft::reverse_iterator<iterator>														reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>												const_reverse_iterator;
 
 
 		private:
@@ -104,12 +104,15 @@ namespace ft
 	
 			// // iterators:
 			iterator begin() { return iterator(_tree.begin()); };
-
 			const_iterator begin() const { return const_iterator(_tree.begin()); };			
-
 			iterator end()  { return iterator(_tree.end()); };
-
 			const_iterator end() const { return const_iterator(_tree.end()); };
+
+			reverse_iterator rbegin() { return reverse_iterator(iterator(_tree.end()));};
+			const_reverse_iterator rbegin() const  { return const_reverse_iterator(const_iterator(_tree.end()));};
+			reverse_iterator rend()  { return reverse_iterator(iterator(_tree.begin()));};
+			const_reverse_iterator rend() const { return const_reverse_iterator(const_iterator(_tree.begin()));};
+
 
 
 
@@ -178,11 +181,6 @@ namespace ft
 				return (iterator(_tree.treeSearch(k)));
 			}
 
-			size_type count (const key_type& k) const {
-				if (find(k) != end())
-					return 1;
-				return 0;
-			};
 
 			// const_iterator find (const key_type& k) const {
 
@@ -201,8 +199,13 @@ namespace ft
 			size_type size() const {return _tree.size();}
 			size_type max_size() const { return (allocatorNode().max_size());};
 
-
 			
+
+			size_type count (const key_type& k) const {
+				if (find(k) != end())
+					return 1;
+				return 0;
+			};
 
 		};
 

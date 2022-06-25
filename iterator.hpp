@@ -181,22 +181,25 @@ namespace ft
 
 		public:
 			mapIterator(T val = nullptr) : _iter(val){};
-			mapIterator(const mapIterator &cp):_iter(cp._iter) {};
-			mapIterator &operator=(mapIterator < typename ft::remove_const< T >::type,  U, Compare> const  &cp){
-				this->_iter = cp._iter;
+			
+			template <class Tp, class Up>
+			mapIterator(const mapIterator<Tp, Up, Compare> &cp):_iter(cp.base()) {};
+
+			// mapIterator(const mapIterator &cp):_iter(cp._iter) {};
+			// mapIterator &operator=(mapIterator < typename ft::remove_const< T >::type,  U, Compare> const  &cp){
+			// 	this->_iter = cp._iter;
+			// 	return (*this);
+			// };
+
+			mapIterator &operator=(mapIterator const  &cp){
+				_iter = cp._iter;
 				return (*this);
 			};
-
-
-
 			~mapIterator(){};
 
 			T base() const { return _iter; }			
 
-			
-
-			iterator_type min(iterator_type x)
-			{
+			iterator_type min(iterator_type x)	{
 				while (x->left->isNil != true)
 					x = x->left;
 				return (x);
@@ -262,13 +265,10 @@ namespace ft
 			pointer operator->() {return &(_iter->keyValue);}
 			const_pointer operator->() const {return &(_iter->keyValue);}
 
-
-			friend
-			bool operator==(const mapIterator& x, const mapIterator& y)
+			friend	bool operator==(const mapIterator& x, const mapIterator& y)
 			{return x._iter == y._iter;};
 
-			friend
-			bool operator!=(const mapIterator& x, const mapIterator& y)
+			friend	bool operator!=(const mapIterator& x, const mapIterator& y)
 			{return x._iter != y._iter;};
 
 

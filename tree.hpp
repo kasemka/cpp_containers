@@ -35,20 +35,21 @@ namespace ft
 
 
 
-	template <class Pair, class Compare, class Allocator>
+	template <class Pair, class Allocator, class Compare >
 	class tree
 	{
 	public:
 		typedef Pair																		value_type;
-		typedef Compare 																	value_compare;
+		typedef Compare 																	key_compare;
 		typedef Allocator 																	allocator_type;
-		typedef typename value_type::first_type												key;
-		typedef typename ft::mapIterator<node<value_type>*, value_type, Compare>			iterator;
+		typedef typename value_type::first_type												key_type;
+		typedef typename value_type::second_type											mapped_type;
+		typedef typename ft::mapIterator<node<value_type>*, value_type>						iterator;
 		// typedef Allocator::
 		
 
 	private:
-		Compare						_compare;	
+		key_compare					_compare;	
 		node<value_type>* 			_nil;
 		node<value_type>* 			_root;
 		size_t						_size; //excludes nil
@@ -57,7 +58,7 @@ namespace ft
 		Allocator					_alloc;
 
 	public:
-		tree():_size(0){
+		tree(const key_compare &comp):_size(0), _compare(comp){
 			_nil = _alloc.allocate(1);
 			_alloc.construct(_nil, node<value_type>());
 			_nil->left = _nil->right = _nil->parent = _nil;
@@ -67,6 +68,7 @@ namespace ft
 		tree &operator=(const tree& copy){
 			if (this != &copy){
 				clear();
+				
 				iterator first = copy.begin();
 				iterator last = copy.end();
 				while(first!= last){
@@ -79,7 +81,7 @@ namespace ft
 
 		~tree(){ clearAll(); };
 
-		key root() { return _root->keyValue.first;}
+		key_type root() { return _root->keyValue.first;}
 
 		void clear(void) {
 			node<value_type>* rmNode; 
@@ -118,7 +120,7 @@ namespace ft
 				y = x;
 				if (x->keyValue.first == val.first)
 					return (ft::make_pair(x, false));
-				if  (_compare(val.first, x->keyValue.first))
+				if  (_compare(val, x->keyValue))
 					x = x->left;
 				else
 					x = x->right;}
@@ -130,7 +132,7 @@ namespace ft
 				_root = newNode;
 				_root->parent = _nil; //different from algor
 				_nil->left = _root;} // !!!! _nil->right = _root;
-			else if  (_compare(val.first, y->keyValue.first))
+			else if  (_compare(val, y->keyValue))
 				y->left = newNode;
 			else
 				y->right = newNode;
@@ -326,12 +328,13 @@ namespace ft
 			
 		}
 
-		node<value_type>* treeSearch(const key& k) const
+		node<value_type>* treeSearch(const key_type& k) const
 		{
 			node<value_type>* x = _root;
+			ft::pair<key_type, mapped_type> kPair = ft::make_pair(k, 0);
 
 			while (x != _nil && k != x->keyValue.first) {	
-				if (_compare(k, x->keyValue.first) == true )
+				if (_compare(kPair, x->keyValue) == true )
 					x = x->left;			
 				else 
 					x = x->right; }
@@ -340,6 +343,24 @@ namespace ft
 		}
 
 		size_t size(void) const { return _size; }
+
+		node<value_type>* lower_bound (const key_type & k) 
+		{
+			node<value_type>* rootp = _root;
+			node<value_type>* result;
+			ft::pair<key_type, mapped_type> kPair = ft::make_pair(k, 0);
+			
+			while (rootp != _nil)
+			{
+			    if (!_compare(_root->keyValue, kPair)) {
+			        result = rootp;
+			        rootp = rootp->left; }
+			    else
+			        rootp = rootp->right;
+			}
+		    return (result);
+		}
+
 
 		void printBT(const std::string& prefix, const node<value_type>* nodeV, bool isLeft) const
 		{
@@ -372,9 +393,27 @@ namespace ft
 		}
 		
 		friend bool	operator==(const tree& x, const tree& y){
-
-			return (x._size == y._size && ft::equal(iterator(x.begin()), iterator(x.end()), iterator(y.begin())));
+			if (x.size() != y.size())
+				return false;
+			return (ft::equal(iterator(x.begin()), iterator(x.end()), iterator(y.begin())));
 		};
+		// friend bool	operator<(const tree& x, const tree& y){
+		// 	iterator itx = x.begin();
+		// 	iterator ity = y.begin();
+
+		// 	iterator itx_end = x.end();
+		// 	iterator ity_end = y.end();
+
+		// 	while (itx != itx_end && ity != ity_end) {
+		// 		if (itx->first != ity->first)
+		// 			return (_compare(itx, ity));
+		// 		++itx;
+		// 		++ity;
+		// 	}
+		// 	if (x.size() < y.size())
+		// 		return true;
+		// 	return false; 
+		// };
 
 	};
 	 

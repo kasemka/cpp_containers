@@ -34,7 +34,7 @@ namespace ft
 		typedef Key																					key_type;
 		typedef T																					mapped_type;
 		typedef ft::pair<const key_type, mapped_type>												value_type;
-		typedef Compare																				key_compare;
+		typedef Compare																				key_compare; //это тип структуры
 		typedef Allocator																			allocator_type;
 		typedef typename Allocator::reference														reference;
 		typedef typename Allocator::const_reference													const_reference;
@@ -43,16 +43,10 @@ namespace ft
 		typedef typename Allocator::size_type														size_type;
 		typedef typename Allocator::difference_type													difference_type;
 
-		typedef typename ft::mapIterator<node<value_type>*, value_type, Compare>					iterator;
-		typedef typename ft::mapIterator<const node<value_type>*, const value_type, Compare>		const_iterator;
+		typedef typename ft::mapIterator<node<value_type>*, value_type>					iterator;
+		typedef typename ft::mapIterator<const node<value_type>*, const value_type>		const_iterator;
 		typedef ft::reverse_iterator<iterator>														reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>												const_reverse_iterator;
-
-
-	private:
-		typedef typename Allocator::template rebind< node<value_type> >::other		allocatorNode;
-		Compare _comp; //создание структуры	
-		ft::tree<value_type, key_compare, allocatorNode> _tree;
 
 	public:
 		class value_compare : public std::binary_function<value_type, value_type, bool>
@@ -60,28 +54,35 @@ namespace ft
 			friend class map;
 		protected:
 			Compare comp;				
-			value_compare (Compare c) : comp(c) {} 
+			value_compare(Compare c) : comp(c) {} //конструктор 
 
 		public:
 			bool operator() (const value_type& x, const value_type& y) const
-			{ return comp(y.first, x.first ); }
+			{ return comp(x.first, y.first); }
 		};
 
 		// construct:
+	private:
+		typedef typename Allocator::template rebind< node<value_type> >::other		allocatorNode;
+		Compare _comp; //создание структуры	
+		ft::tree<value_type, allocatorNode, value_compare> _tree;
+
+	public:
+
 		explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):
-			_comp(comp), _tree() {};
+			_comp(comp), _tree(value_compare(comp)) {};
 	
 
 		template <class InputIterator>
 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
 			const allocator_type& alloc = allocator_type()): 
-			_comp(comp), _tree()
+			_comp(comp), _tree(value_compare(comp))
 		{ insert(first, last);};
 
 
-		map(const map& x):_comp(x._comp), _tree(){
-			// _tree = x._tree;
-			insert(x.begin(), x.end());
+		map(const map& x):_comp(x._comp), _tree(value_compare(x._comp)){
+			_tree = x._tree;
+			// insert(x.begin(), x.end());
 		};
 
 		map &operator=(const map& x) {
@@ -199,53 +200,57 @@ namespace ft
 
 
 		size_type count (const key_type& k) const {
-			const_iterator it = end();
-			const_iterator it2 = find(k);
-
-			if (it2 == it)
+			if (find(k) == end())
 				return 0;
+			return 1; };
 
-	
-			return 1;
-		};
+
+		iterator lower_bound (const key_type& k) { 
+			return (_tree.lower_bound(k)); };
+
+		const_iterator lower_bound (const key_type& k) const {};
 
 		allocator_type get_allocator() const { return allocator_type(_tree._alloc());};
 
 		// Observers
-		key_compare key_comp() const{ return (_comp); };
+		key_compare key_comp() const{ return (_comp); }; //возвращает компаратор типа, переданнного как шаблон в мапу
 
-		value_compare value_comp() const { return value_compare(key_comp()); }
+		value_compare value_comp() const { return value_compare(key_comp()); } 
 
 		// Non-member functions:
 
-		friend bool	operator==(const map& x, const map& y){
-			return (x._tree == y._tree);
-		};
+		friend bool	operator == (const map& x, const map& y){	return (x._tree == y._tree); };
 
-		friend bool	operator!=(const map& x, const map& y){
-			return !(x == y) ;
-		};
+		friend bool	operator != (const map& x, const map& y){	return !(x == y); };
 
-		friend bool	operator<(const map& x, const map& y){
-			int size = x.size();
-			if (size > y.size())
-				size = y.size();
-			for (int i = 0; i < size; ++i)
-			{
-				if (x[i] != y[i])
-					return x[i] < y[i];
+		friend bool	operator < (const map& x, const map& y){ 
+			
+			const_iterator itx = x.begin();
+			const_iterator ity = y.begin();			
+
+			const_iterator itx_end = x.end();
+			const_iterator ity_end = y.end();
+
+			while (itx != itx_end && ity != ity_end) {
+				if (itx->first != ity->first)
+					return (itx->first < ity->first);
+				else if (itx->second != ity->second)
+					return (itx->second < ity->second);
+				++itx;
+				++ity;
 			}
 			if (x.size() < y.size())
 				return true;
-			return (false); 
-		};
+			return false; 
+
+		 };
 
 
-		// friend bool	operator>(const map& x, const map& y){};
+		friend bool	operator > (const map& x, const map& y){ return (y < x); };
 
-		// friend bool	operator<=(const map& x, const map& y){};
+		friend bool	operator <= (const map& x, const map& y){ return !( y < x); };
 		
-		// friend bool	operator>=(const map& x, const map& y){};
+		friend bool	operator >= (const map& x, const map& y){ return !(x < y); };
 
 		//print tree
 		void printTree(){ _tree.printTree(); }

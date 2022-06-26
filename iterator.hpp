@@ -161,7 +161,7 @@ namespace ft
 
 
 
-	template< class T, class U, class Compare>
+	template< class T, class U>
 	struct mapIterator
 	{	
 		public:
@@ -181,9 +181,9 @@ namespace ft
 
 		public:
 			mapIterator(T val = nullptr) : _iter(val){};
-			
+
 			template <class Tp, class Up>
-			mapIterator(const mapIterator<Tp, Up, Compare> &cp):_iter(cp.base()) {};
+			mapIterator(const mapIterator<Tp, Up> &cp):_iter(cp.base()) {};
 
 			// mapIterator(const mapIterator &cp):_iter(cp._iter) {};
 			// mapIterator &operator=(mapIterator < typename ft::remove_const< T >::type,  U, Compare> const  &cp){
@@ -228,9 +228,8 @@ namespace ft
 			iterator_type prev(){
 				iterator_type y;
 
-				if (_iter->isNil == true || _iter->left->isNil == false){
+				if (_iter->isNil == true || _iter->left->isNil == false)
 					return(max(_iter->left));
-				}
 				y = _iter->parent;
 				while (y->isNil == false && _iter == y->left){ // for cas if y is left kid of it's parent
 					_iter = y;

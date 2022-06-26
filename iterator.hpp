@@ -177,7 +177,6 @@ namespace ft
 
 		private:
 			T _iter;
-			// Compare _comp;
 
 		public:
 			mapIterator(T val = nullptr) : _iter(val){};
@@ -218,7 +217,7 @@ namespace ft
 					return(min(_iter->right));
 				y = _iter->parent;
 			
-				while (y->isNil == false && _iter == y->right){ // for cas if y is right kid of it's parent
+				while (y->isNil == false && _iter == y->right){ // for case if y is right kid of it's parent
 					_iter = y;
 					y = y->parent;
 				}
@@ -231,7 +230,7 @@ namespace ft
 				if (_iter->isNil == true || _iter->left->isNil == false)
 					return(max(_iter->left));
 				y = _iter->parent;
-				while (y->isNil == false && _iter == y->left){ // for cas if y is left kid of it's parent
+				while (y->isNil == false && _iter == y->left){ // for case if y is left kid of it's parent
 					_iter = y;
 					y = y->parent;}
 				return (y);
@@ -269,7 +268,6 @@ namespace ft
 
 			friend	bool operator!=(const mapIterator& x, const mapIterator& y)
 			{return x._iter != y._iter;};
-
 
 	};
 

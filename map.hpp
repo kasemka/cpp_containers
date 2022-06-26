@@ -1,7 +1,6 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-
 #include <iostream> 
 #include <memory> 
 #include <functional>
@@ -11,26 +10,11 @@
  
 namespace ft 
 { 
-
-	// template <class _Tp>
-	// struct less 
-	// {
-	// 	bool operator()(const _Tp& _x, const _Tp& _y) const 
-	// 	{
-	// 		return _x < _y;
-	// 	} 
-	// };
-
-
-	// template <class Type> struct rebind {
-	// typedef allocator<Type> other;};
-
 	template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<pair<const Key, T> > >
 	class map
 	{
 
 	public:
-		// types:
 		typedef Key																					key_type;
 		typedef T																					mapped_type;
 		typedef ft::pair<const key_type, mapped_type>												value_type;
@@ -43,8 +27,8 @@ namespace ft
 		typedef typename Allocator::size_type														size_type;
 		typedef typename Allocator::difference_type													difference_type;
 
-		typedef typename ft::mapIterator<node<value_type>*, value_type>					iterator;
-		typedef typename ft::mapIterator<const node<value_type>*, const value_type>		const_iterator;
+		typedef typename ft::mapIterator<node<value_type>*, value_type>								iterator;
+		typedef typename ft::mapIterator<const node<value_type>*, const value_type>					const_iterator;
 		typedef ft::reverse_iterator<iterator>														reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>												const_reverse_iterator;
 
@@ -80,10 +64,7 @@ namespace ft
 		{ insert(first, last);};
 
 
-		map(const map& x):_comp(x._comp), _tree(value_compare(x._comp)){
-			_tree = x._tree;
-			// insert(x.begin(), x.end());
-		};
+		map(const map& x):_comp(x._comp), _tree(value_compare(x._comp)){ _tree = x._tree; };
 
 		map &operator=(const map& x) {
 			if (this != & x){		
@@ -91,13 +72,11 @@ namespace ft
 					_tree.clear();
 				_comp = x._comp;
 				_tree = x._tree;
-				// insert(x.begin(), x.end());
 			}
 			return *this;
 		};
 
 		~map(){	};
-
 
 		// Iterators
 		iterator begin() { return iterator(_tree.begin()); };
@@ -110,12 +89,10 @@ namespace ft
 		reverse_iterator rend()  { return reverse_iterator(iterator(_tree.begin()));};
 		const_reverse_iterator rend() const { return const_reverse_iterator(const_iterator(_tree.begin()));};
 
-
 		// Capacity
 		bool empty() const { return (_tree.size() ? false : true); };
 		size_type size() const {return _tree.size();}
 		size_type max_size() const { return (allocatorNode().max_size());};
-
 
 		// Element access
 		mapped_type& operator[] (const key_type& k)	{
@@ -179,19 +156,9 @@ namespace ft
 				first = it;}
 		}
 
-		void swap (map& x){	
-			// ft::tree<value_type, key_compare, allocatorNode> _treeTmp(x._tree);
-			
-			std::swap(x, *this);
-			// std::swap(x._tree, this->_tree);
-
-		}
+		void swap (map& x){	std::swap(x, *this); }
 
 		void clear(){ _tree.clear();}
-
-
-
-
 
 		// Lookup
 		iterator find (const key_type& k) {	return (iterator(_tree.treeSearch(k)));	}
@@ -204,11 +171,17 @@ namespace ft
 				return 0;
 			return 1; };
 
+		iterator lower_bound (const key_type& k) { return (_tree.lower_bound(k)); };
 
-		iterator lower_bound (const key_type& k) { 
-			return (_tree.lower_bound(k)); };
+		const_iterator lower_bound (const key_type& k) const { return (_tree.lower_bound(k));};
 
-		const_iterator lower_bound (const key_type& k) const {};
+		iterator upper_bound (const key_type& k) { return (_tree.upper_bound(k)); };
+
+		const_iterator upper_bound (const key_type& k) const  { return (_tree.upper_bound(k)); };
+
+		pair<iterator,iterator> equal_range (const key_type& k) {return (_tree.equal_range_unique(k)); };
+			
+		pair<const_iterator,const_iterator> equal_range (const key_type& k) const {return (_tree.equal_range_unique(k)); };
 
 		allocator_type get_allocator() const { return allocator_type(_tree._alloc());};
 
@@ -245,7 +218,6 @@ namespace ft
 
 		 };
 
-
 		friend bool	operator > (const map& x, const map& y){ return (y < x); };
 
 		friend bool	operator <= (const map& x, const map& y){ return !( y < x); };
@@ -253,17 +225,10 @@ namespace ft
 		friend bool	operator >= (const map& x, const map& y){ return !(x < y); };
 
 		//print tree
-		void printTree(){ _tree.printTree(); }
+		// void printTree(){ _tree.printTree(); }
 
 	};
 
 }
 
 #endif
-
-// Some of the commonly used functions offered by Maps:
-// map.insert(): This function inserts the element with a particular/specific key to the existing map.
-// map.begin(): It returns an iterator element that points to the first element of the map.
-// map.end(): It returns an iterator element that points to the last element of the map.
-// map.size(): It returns the number of key-value pairs in the map.
-// map.empty(): It checks whether the map is empty or not.

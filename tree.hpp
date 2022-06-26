@@ -5,14 +5,10 @@
 #include "utils.hpp"
 #include "iterator.hpp"
 
-
 #define BLACK 0
 #define RED 1
 
 
-// nil (Latin "nihil") means "nothing" or the absence of something
-// black and red tree, black=0, red=1
-// isNull is leaf, all leaves are nills (NULL)
 namespace ft
 {
 	template<class T>
@@ -83,12 +79,23 @@ namespace ft
 
 		key_type root() { return _root->keyValue.first;}
 
-		void clear(void) {
-			node<value_type>* rmNode; 
+		void destroy(node<value_type>* nd)
+		{
+			if (nd != _nil)
+			{
+				destroy(nd->left);
+				destroy(nd->right);
+				_alloc.destroy(nd);
+				_alloc.deallocate(nd, sizeof(node<value_type>));
+			}
+		}
 
-			while (_size > 0){
-				rmNode = _root;
-				rbTreeDelete(rmNode);}
+		void clear(void) {
+			destroy(_root);
+			_size = 0;
+			_nil->left = _nil->right = _nil->parent = _nil;
+			_root = _nil;
+
 		}
 
 		void clearAll(void)
@@ -131,7 +138,7 @@ namespace ft
 			if (y == _nil){
 				_root = newNode;
 				_root->parent = _nil; //different from algor
-				_nil->left = _root;} // !!!! _nil->right = _root;
+				_nil->left = _root;} 
 			else if  (_compare(val, y->keyValue))
 				y->left = newNode;
 			else
@@ -140,9 +147,6 @@ namespace ft
 			newNode->color = RED;
 			insertFixup(newNode);
 			++_size;
-			// std::cout<<newNode->key.first <<" was added:\n";
-			// printTree();
-			// std::cout<<std::endl;
 			return (ft::make_pair(newNode, true));
 
 		}
@@ -195,7 +199,7 @@ namespace ft
 			y->parent = x->parent;
 			if (x->parent == _nil){
 				_root = y;
-				_nil->left = _root;} // ???????????????????????????????????????/////					
+				_nil->left = _root;} 			
 			else if (x == x->parent->right)
 				x->parent->right = y;
 			else x->parent->left = y;
@@ -213,7 +217,7 @@ namespace ft
 			y->parent = x->parent;
 			if (x->parent == _nil){
 				_root = y;
-				_nil->left = _root;} // ???????????????????????????????????????/////
+				_nil->left = _root;} 
 			else if (x == x->parent->left)
 				x->parent->left = y;
 			else x->parent->right = y;
@@ -225,7 +229,7 @@ namespace ft
 		{
 			if (u->parent == _nil){
 				_root = v;
-				_nil->left = _root;} // ???????????????????????????????????????/////
+				_nil->left = _root;} 
 			else if (u == u->parent->left)
 				u->parent->left = v;
 			else
@@ -320,7 +324,6 @@ namespace ft
 			if (yOriginalColor == BLACK)
 				deleteFixup(x);
 			_alloc.destroy(z);
-			// std::cout << "z deallocate "<<z<<std::endl;
 			_alloc.deallocate(z, sizeof(node<value_type>));
 			--_size;
 			if (_size == 0)
@@ -344,15 +347,15 @@ namespace ft
 
 		size_t size(void) const { return _size; }
 
-		node<value_type>* lower_bound (const key_type & k) 
+		node<value_type>* lower_bound (const key_type & k) const
 		{
 			node<value_type>* rootp = _root;
-			node<value_type>* result;
+			node<value_type>* result = _nil;
 			ft::pair<key_type, mapped_type> kPair = ft::make_pair(k, 0);
 			
 			while (rootp != _nil)
 			{
-			    if (!_compare(_root->keyValue, kPair)) {
+			    if (!_compare(rootp->keyValue, kPair)) {
 			        result = rootp;
 			        rootp = rootp->left; }
 			    else
@@ -361,6 +364,44 @@ namespace ft
 		    return (result);
 		}
 
+		node<value_type>* upper_bound (const key_type & k) const
+		{
+			node<value_type>* rootp = _root;
+			node<value_type>* result = _nil;
+			ft::pair<key_type, mapped_type> kPair = ft::make_pair(k, 0);
+			
+			while (rootp != _nil)
+			{
+			    if (_compare(kPair, rootp->keyValue)) {
+			        result = rootp;
+			        rootp = rootp->left; }
+			    else
+			        rootp = rootp->right;
+			}
+		    return (result);
+		}
+
+		ft::pair<iterator, iterator> equal_range_unique(const key_type& k) 
+		{
+			typedef ft::pair<iterator, iterator> _Pp;
+
+			ft::pair<key_type, mapped_type> kPair = ft::make_pair(k, 0);
+			node<value_type>* result = _nil;
+			node<value_type>* rootp = _root;
+
+			while (rootp != _nil)
+			{
+				if (_compare(kPair, rootp->keyValue)){
+					result =rootp;
+					rootp = rootp->left;}
+				else if (_compare(rootp->keyValue, kPair))
+					rootp = rootp->right;
+				else
+					return _Pp(iterator(rootp), iterator(rootp->right != _nil ? min(rootp->right) : result));
+			}
+
+			return _Pp(iterator(result), iterator(result));
+		}
 
 		void printBT(const std::string& prefix, const node<value_type>* nodeV, bool isLeft) const
 		{
@@ -397,24 +438,7 @@ namespace ft
 				return false;
 			return (ft::equal(iterator(x.begin()), iterator(x.end()), iterator(y.begin())));
 		};
-		// friend bool	operator<(const tree& x, const tree& y){
-		// 	iterator itx = x.begin();
-		// 	iterator ity = y.begin();
-
-		// 	iterator itx_end = x.end();
-		// 	iterator ity_end = y.end();
-
-		// 	while (itx != itx_end && ity != ity_end) {
-		// 		if (itx->first != ity->first)
-		// 			return (_compare(itx, ity));
-		// 		++itx;
-		// 		++ity;
-		// 	}
-		// 	if (x.size() < y.size())
-		// 		return true;
-		// 	return false; 
-		// };
-
+		
 	};
 	 
 }

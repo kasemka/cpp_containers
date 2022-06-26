@@ -47,7 +47,7 @@ namespace ft
 				this->assign(first, last);
 			};
 		
-			vector (const vector& x): _capacity(x._capacity), _size(x._size){
+			vector (const vector& x): _size(x._size), _capacity(x._capacity){
 				_alloc = allocator_type();
 				_p = _alloc.allocate(_capacity);
 				for (size_type i = 0; i < _size; ++i)
@@ -309,10 +309,10 @@ namespace ft
 
 			void swap (vector& x)
 			{
-				vector<T, Alloc> tmp = x;
-				x = *this;
-				*this = tmp;
-				// std::swap(*this, x);
+				// vector<T, Alloc> tmp = x;
+				// x = *this;
+				// *this = tmp;
+				ft::swap(*this, x);
 			}
 
 			void clear() {
@@ -430,10 +430,10 @@ namespace ft
 		
 	template <class TF, class AllocF>
 	bool operator < (const vector<TF,AllocF>& lhs, const vector<TF,AllocF>& rhs){ 
-		int size = lhs.size();
+		size_t size = lhs.size();
 		if (size > rhs.size())
 			size = rhs.size();
-		for (int i = 0; i < size; ++i){
+		for (size_t i = 0; i < size; ++i){
 			if (lhs[i] != rhs[i])
 				return lhs[i] < rhs[i];
 		}

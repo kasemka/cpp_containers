@@ -33,6 +33,7 @@ namespace ft
 		typedef ft::reverse_iterator<const_iterator>												const_reverse_iterator;
 
 	public:
+		
 		class value_compare : public std::binary_function<value_type, value_type, bool>
 		{ 
 			friend class map;
@@ -48,19 +49,21 @@ namespace ft
 		// construct:
 	private:
 		typedef typename Allocator::template rebind< node<value_type> >::other		allocatorNode;
-		Compare _comp; //создание структуры	
+		Compare _comp; 
+		allocator_type _alloc;		
 		ft::tree<value_type, allocatorNode, value_compare> _tree;
+
 
 	public:
 
 		explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):
-			_comp(comp), _tree(value_compare(comp)) {};
+			_comp(comp), _alloc(alloc), _tree(value_compare(comp)) {};
 	
 
 		template <class InputIterator>
 			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
 			const allocator_type& alloc = allocator_type()): 
-			_comp(comp), _tree(value_compare(comp))
+			_comp(comp), _tree(value_compare(comp)), _alloc(alloc)
 		{ insert(first, last);};
 
 

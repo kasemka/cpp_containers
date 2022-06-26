@@ -54,7 +54,7 @@ namespace ft
 		Allocator					_alloc;
 
 	public:
-		tree(const key_compare &comp):_size(0), _compare(comp){
+		tree(const key_compare &comp):_compare(comp), _size(0){
 			_nil = _alloc.allocate(1);
 			_alloc.construct(_nil, node<value_type>());
 			_nil->left = _nil->right = _nil->parent = _nil;

@@ -1,6 +1,7 @@
 #ifndef STACK_HPP
 #define STACK_HPP
 #include "vector.hpp"
+#include <deque>
 
 namespace ft
 {
@@ -13,16 +14,12 @@ namespace ft
 		typedef Container 							container_type;
 
 		private:
-		vector<T>	_c;
+		Container	_c;
 
 		public:
 		
 		explicit stack (const container_type& ctnr = container_type()): _c(ctnr){}; //создание нового объекта референса  = вызов конструктора, если аргумент пустой
-		//_c(ctnr) - это конструктор копирования
-
 	
-
-
 		virtual ~stack(){};
 
 		bool empty() const

@@ -70,18 +70,19 @@ namespace ft
 
 
 	// pair
-	template <class first_type, class second_type> 
+	template <class key, class value> 
 	struct pair
 	{
+		typedef key		first_type;
+		typedef value 	second_type;
+
 		first_type first;
 		second_type second;
 
-		pair():first(0), second(0){};
+		pair():first(), second(){};
 
 		template<class U, class V> 
-			pair (const pair<U,V>& pr):first(pr.first), second(pr.second){ 
-				// *this = pr;
-				};
+			pair (const pair<U,V>& pr):first(pr.first), second(pr.second){ 	};
 		pair (const first_type& a, const second_type& b):first(a), second(b){};
 
 		pair& operator= (const pair& pr){
@@ -92,6 +93,13 @@ namespace ft
 			return *this;
 		}
 	};
+
+	// make pair
+	template <class T1, class T2>
+	ft::pair<T1,T2> 
+	make_pair(T1 x, T2 y) { 
+		return (pair<T1,T2>(x,y) );
+	}
 
 	template <class T1, class T2>
 	bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
@@ -117,15 +125,17 @@ namespace ft
 	bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
 	{ return !(lhs<rhs); }
 
+	// template <class T>
+	// struct remove_const {
+	// 	typedef T type;	};
+		
+	// template <class T>
+	// struct remove_const <const T>{
+	// 	typedef T type;	};
+	
 
-	// make pair
-	template <class T1, class T2>
-	pair<T1,T2> 
-	make_pair (T1 x, T2 y) { 
-		return (pair<T1,T2>(x,y) );
-	}
-
-
+	template <class _T1, class _T2> 
+	struct is_convertible: public ft::integral_constant<bool,  __is_convertible_to(_T1, _T2)> {};
 
 }
 

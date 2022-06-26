@@ -134,7 +134,6 @@ namespace ft
 				this->clear();
 				_size = last - first;
 			
-				// this->reserve(_size);
 				if (_capacity < _size)
 				{
 					// if (_capacity > 0)
@@ -434,8 +433,7 @@ namespace ft
 		int size = lhs.size();
 		if (size > rhs.size())
 			size = rhs.size();
-		for (int i = 0; i < size; ++i)
-		{
+		for (int i = 0; i < size; ++i){
 			if (lhs[i] != rhs[i])
 				return lhs[i] < rhs[i];
 		}
@@ -486,7 +484,5 @@ namespace ft
 // begin(): It returns an iterator element which points to the first element of the vector.
 // end(): It returns an iterator element which points to the last element of the vector.
 // swap(): Swaps the two input vectors.
-
-
 
 

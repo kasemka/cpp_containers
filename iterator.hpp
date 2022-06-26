@@ -65,7 +65,7 @@ namespace ft
 			iteratorVector(typename iteratorVector::pointer const &vecPoint):_elem(vecPoint){};
 
 			template <class _Up>
-			iteratorVector(const iteratorVector<_Up>& __u, typename std::enable_if<std::is_convertible<_Up, iterator_type>::value>::type* = 0): _elem(__u.base()){};
+			iteratorVector(const iteratorVector<_Up>& __u, typename std::enable_if<ft::is_convertible<_Up, iterator_type>::value>::type* = 0): _elem(__u.base()){};
 
 			~iteratorVector() {};
 			T base() const  { return _elem; }
@@ -129,7 +129,7 @@ namespace ft
 			reverse_iterator():_elem(){};
 			explicit reverse_iterator(iterator_type iter) : _elem(iter){};
 			template <class Iter>
-			reverse_iterator (const reverse_iterator<Iter>& rev_it): _elem(rev_it.base()){};
+			reverse_iterator (const reverse_iterator<Iter>& rev_it, typename std::enable_if<ft::is_convertible<Iter, iterator_type>::value>::type* = 0): _elem(rev_it.base()){};
 			template <class Iter>
 			reverse_iterator& operator=(const reverse_iterator<Iter>& rev_it) { _elem = rev_it.base(); return *this; }
 
@@ -182,7 +182,7 @@ namespace ft
 			mapIterator(T val = nullptr) : _iter(val){};
 
 			template <class Tp, class Up>
-			mapIterator(const mapIterator<Tp, Up> &cp):_iter(cp.base()) {};
+			mapIterator(const mapIterator<Tp, Up> &cp, typename std::enable_if<!ft::is_convertible<Up, iterator_type>::value>::type* = 0):_iter(cp.base()) {};
 
 			// mapIterator(const mapIterator &cp):_iter(cp._iter) {};
 			// mapIterator &operator=(mapIterator < typename ft::remove_const< T >::type,  U, Compare> const  &cp){
@@ -263,11 +263,13 @@ namespace ft
 			pointer operator->() {return &(_iter->keyValue);}
 			const_pointer operator->() const {return &(_iter->keyValue);}
 
-			friend	bool operator==(const mapIterator& x, const mapIterator& y)
-			{return x._iter == y._iter;};
+			template <class Tp, class Up>
+			friend	bool operator==(const mapIterator& x, const mapIterator<Tp, Up>& y)
+			{return x._iter == y.base();};
 
-			friend	bool operator!=(const mapIterator& x, const mapIterator& y)
-			{return x._iter != y._iter;};
+			template <class Tp, class Up>
+			friend	bool operator!=(const mapIterator& x, const mapIterator<Tp, Up>& y)
+			{return x._iter != y.base();};
 
 	};
 

@@ -4,12 +4,12 @@
 
 namespace ft
 {
-	template<typename T, typename Container = vector<T> >
+	template<typename T, typename Container = ft::vector<T> >
 	class stack
 	{
 		public:
-		// typedef typename Container::value_type		value_type;
-		// typedef typename Container::size_type 		size_type;
+		typedef typename Container::value_type		value_type;
+		typedef typename Container::size_type 		size_type;
 		typedef Container 							container_type;
 
 		private:

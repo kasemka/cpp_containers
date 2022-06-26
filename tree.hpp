@@ -77,7 +77,7 @@ namespace ft
 
 		~tree(){ clearAll(); };
 
-		key_type root() { return _root->keyValue.first;}
+		// key_type root() { return _root->keyValue.first;}
 
 		void destroy(node<value_type>* nd)
 		{

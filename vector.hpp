@@ -1,13 +1,10 @@
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
-// #include <string>
 #include <memory>
 #include <iostream>
-// #include <unistd.h>
 #include "iterator.hpp"
 #include "utils.hpp"
-// #include <algorithm>
 
 
 namespace ft
@@ -309,10 +306,10 @@ namespace ft
 
 			void swap (vector& x)
 			{
-				// vector<T, Alloc> tmp = x;
-				// x = *this;
-				// *this = tmp;
-				ft::swap(*this, x);
+				std::swap(_size, x._size);
+				std::swap(_capacity, x._capacity);
+				std::swap(_alloc, x._alloc);
+				std::swap(_p, x._p);
 			}
 
 			void clear() {
@@ -347,23 +344,12 @@ namespace ft
 				return _p[0];
 
 			}
-			reference back(){
-				// if (_size > 0)
-					return _p[_size - 1];
-				// else
-				// 	throw;
-				// else 
-				// throw std::invalid_argument("");
-				// else underfined behaviour 
-				//
-			}
-			const_reference back() const
-			{
-				// if (_size > 0)
-					return _p[_size - 1];
-				// else 
-				// 	throw ;
-			}
+
+			T* data() { return _p; }
+			const T* data() const { return _p; }
+
+			reference back(){ return _p[_size - 1];}
+			const_reference back() const { return _p[_size - 1]; }
 
 			// Iterators:
 			iterator begin(){ return (_p); };
@@ -455,34 +441,11 @@ namespace ft
 	template <class TF, class AllocF>
 	void swap (vector<TF, AllocF>& x, vector<TF, AllocF>& y)
 	{
-		vector<TF, AllocF> tmp = x;
-		x = y;
-		y = tmp;
-
+		x.swap(y);
 	}
 }
 
 
-// Non-member function overloads
-
-
-
-
 #endif
-
-
-// push_back(value): This method appends the data to the vector.
-// pop_back(): This method removes the last element from the vector.
-// insert(index, value): This method inserts new elements before the element at the specified position.
-// size(): This method returns the size of the vector.
-// empty(): This method checks whether the vector is empty or not.
-// front(): This method returns the first value of the vector.
-// back(): The back method returns the last value of the vector.
-// at(index): This method returns the value at the specified position.
-// erase(index): The erase method removes elements from the given index.
-// clear(): This method clears all the items in the vector.
-// begin(): It returns an iterator element which points to the first element of the vector.
-// end(): It returns an iterator element which points to the last element of the vector.
-// swap(): Swaps the two input vectors.
 
 
